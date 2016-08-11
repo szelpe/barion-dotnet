@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		BarionClient.nuspec = BarionClient.nuspec
 		createPackage.ps1 = createPackage.ps1
+		publishPackage.ps1 = publishPackage.ps1
 		QuickStart.md = QuickStart.md
 		README.md = README.md
 	EndProjectSection
