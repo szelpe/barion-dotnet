@@ -14,6 +14,14 @@ The Barion .NET library makes it easy to add Barion payment to your .NET applica
 - .NET 4.0 or later
 - Newtonsoft.Json
 
+## Installation
+
+The easiest way to install is to use NuGet:
+
+```
+Install-Package BarionClient
+```
+
 ## Usage
 
 The heart of the library is the `BarionClient` class which provides the `ExecuteAsync` method to execute various operations.
@@ -27,7 +35,7 @@ var barionSettings = new BarionSettings
     {
         BaseUrl = new Uri("https://api.test.barion.com/"),
         POSKey = Guid.Parse("d1bcff3989885d3a98235c1cd768eba2")
-    }
+    };
 
 using(var barionClient = new BarionClient(barionSettings))
 {
@@ -74,3 +82,9 @@ public class RejectOperationResult : BarionOperationResult
 ```
 
 After this you can use your own operation class the same way as the built in ones.
+
+## Contribute
+
+You're welcome to contribute. To build the source code you'll need **Visual Studio 2015**.
+
+You can use `createPackage.ps1` to create the NuGet package.

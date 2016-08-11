@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        label, button {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sample Website with Barion integration</h1>
+    <div>
+        <p>Pay for a product via Barion: </p>
+        @using (Html.BeginForm("StartPayment", "Barion"))
+        {
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="product.name" />
+
+            <label for="price">Price: </label>
+            <input type="number" id="price" name="product.price" />
+
+            <button type="submit">Pay via Barion</button>
+        }
+    </div>
+</body>
+</html>
