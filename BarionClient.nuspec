@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>BarionClient</id>
+    <version>1.0.0</version>
+    <authors>Peter Szel</authors>
+    <owners>Peter Szel</owners>
+    <licenseUrl>https://github.com/szelpe/barion-dotnet/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/szelpe/barion-dotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <title>Barion .NET Client</title>
+    <description>The Barion .NET library makes it easy to add Barion payment to your .NET application.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Barion Payment</tags>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.4" />
+    </dependencies>
+  </metadata>
+</package>
