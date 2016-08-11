@@ -1,5 +1,7 @@
 # Quickstart guide to integrate your .NET web application with Barion Payment Gateway
 
+You can find a complete sample website for this guide under the Samples folder. Check [BarionController](https://github.com/szelpe/barion-dotnet/blob/master/Samples/SampleWebsite/Controllers/BarionController.cs) for a detailed example on how to use the client.
+
 ## Setup
 
 - Install the package `BarionClient`

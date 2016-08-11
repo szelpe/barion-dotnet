@@ -11,7 +11,7 @@ The Barion .NET library makes it easy to add Barion payment to your .NET applica
 
 ## Prerequisites
 
-- .NET 4.0 or later
+- .NET 4.5 or later
 - Newtonsoft.Json
 
 ## Installation
@@ -27,6 +27,10 @@ Install-Package BarionClient
 The heart of the library is the `BarionClient` class which provides the `ExecuteAsync` method to execute various operations.
 Create the operation class you want to use: `StartPaymentOperation`, `GetPaymentStateOperation`, `RefundOperation` or `FinishReservationOperation` respectively.
 After setting the operation properties you can use the `ExecuteAsync` method and pass the opertaion as the parameter.
+
+> Note that `BarionClient` implements `IDisposable`, use it [accordingly](https://msdn.microsoft.com/en-us/library/yh598w02.aspx).
+
+[QuickStart guide](https://github.com/szelpe/barion-dotnet/blob/master/QuickStart.md)
 
 ### Example
 
@@ -52,7 +56,9 @@ using(var barionClient = new BarionClient(barionSettings))
 }
 ```
 
-> Note that `BarionClient` implements `IDisposable`, use it [accordingly](https://msdn.microsoft.com/en-us/library/yh598w02.aspx).
+## Sample website
+
+You can find a complete sample website under the `Samples` directory. Check [BarionController](https://github.com/szelpe/barion-dotnet/blob/master/Samples/SampleWebsite/Controllers/BarionController.cs) for a detailed example on how to use the client.
 
 ## Extending the API
 
