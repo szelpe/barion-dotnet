@@ -15,9 +15,9 @@ namespace BarionClientTester
         {
             var settings = new BarionSettings
             {
-                BaseUrl = new Uri("https://api.test.barion.com/"),
-                POSKey = Guid.Parse("00000000000000000000000000000000"),
-                Payee = "user@example.com"
+                BaseUrl = new Uri(AppSettings.BarionBaseAddress),
+                POSKey = Guid.Parse(AppSettings.BarionPOSKey),
+                Payee = AppSettings.BarionPayee
             };
 
             using (var barionClient = new BarionClient(settings))
