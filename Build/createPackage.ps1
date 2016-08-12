@@ -1,5 +1,6 @@
 param(
-	[bool]$rebuild = $true
+	[bool]$rebuild = $true,
+	[string]$version = "1.0.0"
 )
 
 if($rebuild)
@@ -15,6 +16,6 @@ if ((Get-Command nuget -ErrorAction SilentlyContinue) -eq $null)
 	Set-Alias nuget .\nuget.exe
 }
 
-nuget pack BarionClientLibrary\BarionClientLibrary.nuspec
+nuget pack BarionClientLibrary\BarionClientLibrary.nuspec -Version $version
 
 rm .\nuget.exe -ErrorAction SilentlyContinue
