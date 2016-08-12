@@ -2,6 +2,8 @@
 
 The Barion .NET library makes it easy to add Barion payment to your .NET application. It is built upon [Barion's Web API](https://doksi.barion.com/).
 
+[![Build status](https://ci.appveyor.com/api/projects/status/ixe1udvb57sbh0hv/branch/master?svg=true)](https://ci.appveyor.com/project/szelpe/barion-dotnet/branch/master)
+
 ## Supported operations
 
 - Immediate payment
