@@ -11,11 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		BarionClient.nuspec = BarionClient.nuspec
-		createPackage.ps1 = createPackage.ps1
-		publishPackage.ps1 = publishPackage.ps1
 		QuickStart.md = QuickStart.md
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{18F4E511-9F73-4EC1-94CA-E35E0C29E0F3}"
+	ProjectSection(SolutionItems) = preProject
+		Build\createPackage.ps1 = Build\createPackage.ps1
+		Build\publishPackage.ps1 = Build\publishPackage.ps1
 	EndProjectSection
 EndProject
 Global
