@@ -21,6 +21,9 @@ namespace BarionClientLibrary
 
         public BarionClient(BarionSettings settings, HttpClient httpClient)
         {
+            if (httpClient == null)
+                throw new ArgumentNullException(nameof(httpClient));
+
             _httpClient = httpClient;
 
             if (settings == null)
