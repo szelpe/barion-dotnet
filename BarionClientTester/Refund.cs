@@ -58,7 +58,7 @@ namespace BarionClientTester
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Sending StartPayment...");
-                var result = barionClient.ExecuteAsync(startPaymentOperation).Result as StartPaymentOperationResult;
+                var result = barionClient.ExecuteAsync<StartPaymentOperationResult>(startPaymentOperation).Result;
                 Console.ResetColor();
                 Console.WriteLine("StartPayment result:");
                 if (result.IsOperationSuccessful)
@@ -85,7 +85,7 @@ namespace BarionClientTester
                 var statusOperation = new GetPaymentStateOperation();
                 statusOperation.PaymentId = result.PaymentId;
 
-                var result2 = barionClient.ExecuteAsync(statusOperation).Result as GetPaymentStateOperationResult;
+                var result2 = barionClient.ExecuteAsync<GetPaymentStateOperationResult>(statusOperation).Result;
 
                 Console.ResetColor();
                 Console.WriteLine("GetPaymentState result:");
@@ -110,7 +110,7 @@ namespace BarionClientTester
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Sending Refund...");
 
-                var result3 = barionClient.ExecuteAsync(refundOpertation).Result as RefundOperationResult;
+                var result3 = barionClient.ExecuteAsync<RefundOperationResult>(refundOpertation).Result;
 
                 Console.ResetColor();
                 Console.WriteLine("Refund result:");

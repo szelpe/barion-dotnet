@@ -35,9 +35,27 @@ namespace BarionClientLibrary
             _settings = settings;
         }
 
+        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation)
+            where TResult : BarionOperationResult
+        {
+            if (typeof(TResult) != operation.ResultType)
+                throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
+
+            return await ExecuteAsync(operation) as TResult;
+        }
+
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation)
         {
             return await ExecuteAsync(operation, new CancellationToken());
+        }
+
+        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation, CancellationToken cancellationToken)
+            where TResult : BarionOperationResult
+        {
+            if (typeof(TResult) != operation.ResultType)
+                throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
+
+            return await ExecuteAsync(operation, cancellationToken) as TResult;
         }
 
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation, CancellationToken cancellationToken)
