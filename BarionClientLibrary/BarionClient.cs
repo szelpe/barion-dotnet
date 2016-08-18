@@ -15,7 +15,7 @@ namespace BarionClientLibrary
     public class BarionClient : IDisposable
     {
         private HttpClient _httpClient;
-        private BarionSettings _settings;
+        private readonly BarionSettings _settings;
 
         public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) {}
 
@@ -46,7 +46,7 @@ namespace BarionClientLibrary
 
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation)
         {
-            return await ExecuteAsync(operation, new CancellationToken());
+            return await ExecuteAsync(operation, default(CancellationToken));
         }
 
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation, CancellationToken cancellationToken)
