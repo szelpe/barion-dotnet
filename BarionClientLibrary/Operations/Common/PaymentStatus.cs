@@ -2,7 +2,7 @@
 {
     public enum PaymentStatus
     {
-        Prepared,
+        Prepared = 1,
         Started,
         Reserved,
         Canceled,

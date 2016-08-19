@@ -32,6 +32,9 @@ namespace BarionClientLibrary
             if (settings.BaseUrl == null)
                 throw new ArgumentNullException(nameof(settings.BaseUrl));
 
+            if (!settings.BaseUrl.IsAbsoluteUri)
+                throw new ArgumentException($"BaseUrl must be an absolute Uri. Actual value: {settings.BaseUrl}", nameof(settings.BaseUrl));
+
             _settings = settings;
         }
 
@@ -92,14 +95,20 @@ namespace BarionClientLibrary
         {
             var response = await responseMessage.Content.ReadAsStringAsync();
 
-            var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType);
+            var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType, new JsonSerializerSettings {
+                Converters = new List<JsonConverter> { new StringEnumConverter { AllowIntegerValues = false } }
+            });
+
+            if (operationResult == null)
+                return new BarionOperationResult { IsOperationSuccessful = false, Errors = new[] { new Error { Title = "Deserialized result was null" } } };
 
             if (!responseMessage.IsSuccessStatusCode && operationResult.Errors == null)
             {
                 return new BarionOperationResult
                 {
                     IsOperationSuccessful = false,
-                    Errors = new[] { new Error
+                    Errors = new[] {
+                        new Error
                         {
                             ErrorCode = responseMessage.StatusCode.ToString(),
                             Title = responseMessage.ReasonPhrase,
@@ -109,7 +118,7 @@ namespace BarionClientLibrary
                 };
             }
 
-            operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && !operationResult.Errors.Any();
+            operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && (operationResult.Errors == null || !operationResult.Errors.Any());
             
             return operationResult;
         }
