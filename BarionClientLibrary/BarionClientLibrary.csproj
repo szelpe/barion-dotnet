@@ -55,6 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BarionClient.cs" />
+    <Compile Include="RetryPolicies\ExponentialRetry.cs" />
+    <Compile Include="RetryPolicies\IRetryPolicy.cs" />
     <Compile Include="Operations\BarionOperation.cs" />
     <Compile Include="Operations\BarionOperationResult.cs" />
     <Compile Include="BarionSettings.cs" />
@@ -85,6 +87,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Operations\StartPayment\StartPaymentOperation.cs" />
     <Compile Include="Operations\StartPayment\StartPaymentOperationResult.cs" />
+    <Compile Include="RetryPolicies\LinearRetry.cs" />
+    <Compile Include="RetryPolicies\NoRetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BarionClientLibrary.nuspec" />

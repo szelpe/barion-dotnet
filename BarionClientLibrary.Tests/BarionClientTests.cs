@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Globalization;
 using Newtonsoft.Json;
+using NSubstitute;
+using BarionClientLibrary.RetryPolicies;
 
 namespace BarionClientLibrary.Tests
 {
@@ -15,17 +17,21 @@ namespace BarionClientLibrary.Tests
         private HttpClient _httpClient;
         private TestHttpMessageHandler _httpMessageHandler;
         private BarionSettings _barionClientSettings;
+        private IRetryPolicy _retryPolicy;
 
         [SetUp]
         public void Initialize()
         {
             _httpMessageHandler = new TestHttpMessageHandler();
             _httpClient = new HttpClient(_httpMessageHandler);
+            _retryPolicy = Substitute.For<IRetryPolicy>();
+            _retryPolicy.CreateInstance().Returns(_retryPolicy);
 
             _barionClientSettings = new BarionSettings
             {
                 BaseUrl = new Uri("https://api.barion.com"),
-                POSKey = Guid.NewGuid()
+                POSKey = Guid.NewGuid(),
+                RetryPolicy = _retryPolicy
             };
             _barionClient = new BarionClient(_barionClientSettings, _httpClient);
         }
@@ -38,6 +44,28 @@ namespace BarionClientLibrary.Tests
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
             Assert.AreEqual(1, _httpMessageHandler.SendAsyncCallCount, "SendAsync should have been called once and only once.");
+        }
+
+        [Test]
+        public async Task ExecuteAsync_ShouldRetrySending_IfPolicyIndicates()
+        {
+            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
+            _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
+            TimeSpan timespan;
+            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
+                .ReturnsForAnyArgs(args => {
+                    var retryCount = args[0] as int?;
+                    args[2] = TimeSpan.FromMilliseconds(1);
+
+                    if (retryCount < 3)
+                        return true;
+                    
+                    return false;
+                });
+
+            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
+
+            Assert.AreEqual(4, _httpMessageHandler.SendAsyncCallCount, "SendAsync should have been called three times.");
         }
 
         [Test]

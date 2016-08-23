@@ -1,5 +1,6 @@
 ﻿using BarionClientLibrary.Operations;
 using BarionClientLibrary.Operations.Common;
+using BarionClientLibrary.RetryPolicies;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -15,7 +16,8 @@ namespace BarionClientLibrary
     public class BarionClient : IDisposable
     {
         private HttpClient _httpClient;
-        private readonly BarionSettings _settings;
+        private BarionSettings _settings;
+        private IRetryPolicy _retryPolicy;
 
         public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) {}
 
@@ -36,6 +38,8 @@ namespace BarionClientLibrary
                 throw new ArgumentException($"BaseUrl must be an absolute Uri. Actual value: {settings.BaseUrl}", nameof(settings.BaseUrl));
 
             _settings = settings;
+
+            _retryPolicy = settings.RetryPolicy ?? new ExponentialRetry();
         }
 
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation)
@@ -67,11 +71,39 @@ namespace BarionClientLibrary
             ValidateOperation(operation);
 
             operation.POSKey = _settings.POSKey;
-            var message = PrepareHttpRequestMessage(operation);
 
-            var responseMessage = await _httpClient.SendAsync(message, cancellationToken);
+            return await SendWithRetry(operation, cancellationToken);
+        }
 
-            return await CreateResultFromResponseMessage(responseMessage, operation);
+        private async Task<BarionOperationResult> SendWithRetry(BarionOperation operation, CancellationToken cancellationToken)
+        {
+            var shouldRetry = false;
+            var currentRetryCount = 0;
+            TimeSpan retryInterval;
+            BarionOperationResult result;
+
+            do
+            {
+                var message = PrepareHttpRequestMessage(operation);
+
+                var responseMessage = await _httpClient.SendAsync(message, cancellationToken);
+
+                result = await CreateResultFromResponseMessage(responseMessage, operation);
+
+                if (!result.IsOperationSuccessful)
+                {
+                    shouldRetry = _retryPolicy.CreateInstance().ShouldRetry(currentRetryCount, responseMessage.StatusCode, out retryInterval);
+
+                    if (shouldRetry)
+                    {
+                        await Task.Delay(retryInterval);
+                        currentRetryCount++;
+                    }
+                }
+
+            } while (shouldRetry);
+
+            return result;
         }
 
         private HttpRequestMessage PrepareHttpRequestMessage(BarionOperation operation)
