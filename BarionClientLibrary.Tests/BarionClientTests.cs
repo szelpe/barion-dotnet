@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Net.Http;
 using BarionClientLibrary.Operations.StartPayment;
-using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Net;
 using System.Globalization;
 using Newtonsoft.Json;
 using NSubstitute;
 using BarionClientLibrary.RetryPolicies;
+using Xunit;
+using System.Collections.Generic;
 
 namespace BarionClientLibrary.Tests
 {
@@ -19,8 +20,7 @@ namespace BarionClientLibrary.Tests
         private BarionSettings _barionClientSettings;
         private IRetryPolicy _retryPolicy;
 
-        [SetUp]
-        public void Initialize()
+        public BarionClientTests()
         {
             _httpMessageHandler = new TestHttpMessageHandler();
             _httpClient = new HttpClient(_httpMessageHandler);
@@ -36,17 +36,17 @@ namespace BarionClientLibrary.Tests
             _barionClient = new BarionClient(_barionClientSettings, _httpClient);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSendHttpRequest()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
 
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
-            Assert.AreEqual(1, _httpMessageHandler.SendAsyncCallCount, "SendAsync should have been called once and only once.");
+            Assert.Equal(1, _httpMessageHandler.SendAsyncCallCount);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldRetrySending_IfPolicyIndicates()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
@@ -65,34 +65,25 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
-            Assert.AreEqual(4, _httpMessageHandler.SendAsyncCallCount, "SendAsync should have been called three times.");
+            Assert.Equal(4, _httpMessageHandler.SendAsyncCallCount);
         }
 
-        [Test]
-        public async Task ExecuteAsync_ShouldSetValidPOSKey()
+        public static object[][] GetHttpMethods = { new [] { HttpMethod.Post }, new [] { HttpMethod.Put } };
+
+        [Theory]
+        [MemberData(nameof(GetHttpMethods))]
+        public async Task ExecuteAsync_ShouldSetValidPOSKey(HttpMethod httpMethod)
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
             var operation = PrepareValidOperation();
-            operation.MethodReturns = HttpMethod.Post;
+            operation.MethodReturns = httpMethod;
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.AreEqual($"{{\r\n  \"POSKey\": \"{_barionClientSettings.POSKey}\"\r\n}}", _httpMessageHandler.HttpRequestBody, "Request body should contain the POSKey.");
+            Assert.Equal($"{{\r\n  \"POSKey\": \"{_barionClientSettings.POSKey}\"\r\n}}", _httpMessageHandler.HttpRequestBody);
         }
 
-        [Test]
-        public async Task ExecuteAsync_ShouldSetValidPOSKey_OnPutRequest()
-        {
-            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
-            var operation = PrepareValidOperation();
-            operation.MethodReturns = HttpMethod.Put;
-
-            var result = await _barionClient.ExecuteAsync(operation);
-
-            Assert.AreEqual($"{{\r\n  \"POSKey\": \"{_barionClientSettings.POSKey}\"\r\n}}", _httpMessageHandler.HttpRequestBody, "Request body should contain the POSKey.");
-        }
-
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetContentTypeTo_Json()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
@@ -101,10 +92,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.AreEqual("application/json", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.MediaType, "MediaType should have been application/json.");
+            Assert.Equal("application/json", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.MediaType);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetEncodingTo_UTF8()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
@@ -113,10 +104,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.AreEqual("utf-8", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.CharSet, "CharSet should have been utf-8.");
+            Assert.Equal("utf-8", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.CharSet);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSerializeEnumsTo_String()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
@@ -129,10 +120,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            StringAssert.Contains("\"Color\": \"Red\"", _httpMessageHandler.HttpRequestBody, "Request body should have contained the Color property.");
+            Assert.Contains("\"Color\": \"Red\"", _httpMessageHandler.HttpRequestBody);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldNotSetBody_OnGetRequests()
         {
             var operation = PrepareValidOperation();
@@ -142,10 +133,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.IsNull(_httpMessageHandler.HttpRequestBody, "Request body should have been null.");
+            Assert.Null(_httpMessageHandler.HttpRequestBody);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetValidUri()
         {
             var operation = PrepareValidOperation();
@@ -156,10 +147,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.AreEqual(_httpMessageHandler.HttpRequestMessage.RequestUri.ToString(), "https://api.barion.com/payment/start", "Request url should have been valid.");
+            Assert.Equal(_httpMessageHandler.HttpRequestMessage.RequestUri.ToString(), "https://api.barion.com/payment/start");
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetOperationSuccessTrue_OnSuccessStatusCode()
         {
             var operation = PrepareValidOperation();
@@ -167,10 +158,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.IsTrue(result.IsOperationSuccessful, "Operation should have been successful.");
+            Assert.True(result.IsOperationSuccessful, "Operation should have been successful.");
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetOperationSuccessFalse_OnErrorStatusCode()
         {
             var operation = PrepareValidOperation();
@@ -179,12 +170,12 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.IsFalse(result.IsOperationSuccessful, "Operation should not have been successful.");
-            Assert.AreEqual("BadRequest", result.Errors[0].ErrorCode, "ErrorCode should have been `BadRequest`.");
-            Assert.AreEqual("Bad Request", result.Errors[0].Title, "Title should have been `Bad Request`.");
+            Assert.False(result.IsOperationSuccessful, "Operation should not have been successful.");
+            Assert.Equal("BadRequest", result.Errors[0].ErrorCode);
+            Assert.Equal("Bad Request", result.Errors[0].Title);
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetOperationSuccessFalse_OnErrorStatusCode_EvenIfTheErrorsArrayIsEmpty()
         {
             var operation = PrepareValidOperation();
@@ -194,10 +185,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.IsFalse(result.IsOperationSuccessful, "Operation should not have been successful.");
+            Assert.False(result.IsOperationSuccessful, "Operation should not have been successful.");
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldSetOperationSuccessFalse_OnErrorsArrayIsNotEmpty()
         {
             var operation = PrepareValidOperation();
@@ -206,10 +197,10 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.IsFalse(result.IsOperationSuccessful, "Operation should not have been successful.");
+            Assert.False(result.IsOperationSuccessful, "Operation should not have been successful.");
         }
 
-        [Test]
+        [Fact]
         public async Task ExecuteAsync_ShouldParseTheResponseCorrectly()
         {
             var operation = PrepareValidOperation();
@@ -228,18 +219,18 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync<TestOperationResult>(operation);
 
-            Assert.AreEqual(1, result.IntProperty, "Int should have been parsed correctly.");
-            Assert.AreEqual(1.23, result.DecimalProperty, "Decimal should have been parsed correctly.");
-            Assert.AreEqual(1.23, result.DoubleProperty, "Double should have been parsed correctly.");
-            Assert.AreEqual(new DateTime(2016, 8, 20, 11, 36, 14, 333), result.DateTimeProperty, "DateTime should have been parsed correctly.");
-            Assert.AreEqual("a nice string", result.StringProperty, "String should have been parsed correctly.");
-            Assert.AreEqual(ConsoleColor.Red, result.EnumProperty, "Enum should have been parsed correctly.");
-            Assert.AreEqual(CultureInfo.CreateSpecificCulture("hu-HU"), result.CultureInfoProperty, "CultureInfo should have been parsed correctly.");
-            Assert.AreEqual(Guid.Parse("462063d5b915410cae9d3bd423583f0f"), result.GuidProperty, "Guid should have been parsed correctly.");
-            Assert.AreEqual(TimeSpan.FromDays(1), result.TimeSpanProtperty, "TimeSpan should have been parsed correctly.");
+            Assert.Equal(1, result.IntProperty);
+            Assert.Equal((decimal)1.23, result.DecimalProperty, 2);
+            Assert.Equal(1.23, result.DoubleProperty);
+            Assert.Equal(new DateTime(2016, 8, 20, 11, 36, 14, 333), result.DateTimeProperty);
+            Assert.Equal("a nice string", result.StringProperty);
+            Assert.Equal(ConsoleColor.Red, result.EnumProperty);
+            Assert.Equal(CultureInfo.CreateSpecificCulture("hu-HU"), result.CultureInfoProperty);
+            Assert.Equal(Guid.Parse("462063d5b915410cae9d3bd423583f0f"), result.GuidProperty);
+            Assert.Equal(TimeSpan.FromDays(1), result.TimeSpanProtperty);
         }
 
-        [Test]
+        [Fact]
         public void ExecuteAsync_ShouldNotAllowNumberAsAnEnum()
         {
             var operation = PrepareValidOperation();
@@ -251,7 +242,7 @@ namespace BarionClientLibrary.Tests
             Assert.ThrowsAsync<JsonSerializationException>(async () => await _barionClient.ExecuteAsync<TestOperationResult>(operation));
         }
 
-        [Test]
+        [Fact]
         public void BarionClient_ShouldThrowException_IfAlreadyDisposed()
         {
             var operation = PrepareValidOperation();
@@ -262,7 +253,7 @@ namespace BarionClientLibrary.Tests
             Assert.ThrowsAsync<ObjectDisposedException>(async () => await _barionClient.ExecuteAsync(operation));
         }
 
-        [Test]
+        [Fact]
         public void BarionClient_ShouldThrowException_IfBaseUrl_IsRelative()
         {
             _barionClientSettings = new BarionSettings
@@ -274,13 +265,13 @@ namespace BarionClientLibrary.Tests
             Assert.Throws<ArgumentException>(() => new BarionClient(_barionClientSettings));
         }
 
-        [Test]
+        [Fact]
         public void BarionClient_ShouldThrowException_IfSettings_IsNull()
         {
             Assert.Throws<ArgumentNullException>(() => new BarionClient(null));
         }
 
-        [Test]
+        [Fact]
         public void BarionClient_ShouldThrowException_IfBaseUrl_IsNull()
         {
             _barionClientSettings = new BarionSettings
@@ -291,7 +282,7 @@ namespace BarionClientLibrary.Tests
             Assert.Throws<ArgumentNullException>(() => new BarionClient(_barionClientSettings));
         }
 
-        [Test]
+        [Fact]
         public void BarionClient_ShouldThrowException_IfHttpClient_IsNull()
         {
             _barionClientSettings = new BarionSettings
