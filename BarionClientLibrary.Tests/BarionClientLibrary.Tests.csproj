@@ -88,6 +88,8 @@
   <ItemGroup>
     <Compile Include="BarionClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryPolicies\ExponentialRetryTests.cs" />
+    <Compile Include="RetryPolicies\LinearRetryTests.cs" />
     <Compile Include="TestHttpMessageHandler.cs" />
     <Compile Include="TestOperation.cs" />
     <Compile Include="TestOperationResult.cs" />

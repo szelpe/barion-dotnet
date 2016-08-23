@@ -17,6 +17,6 @@ page.open(system.args[1], function (status) {
         setTimeout(function () {
             page.render("after_submit.png");
             phantom.exit();
-        }, 8000);
-    }, 3000);
+        }, 10000);
+    }, 5000);
 });
