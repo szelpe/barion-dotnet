@@ -30,7 +30,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         [InlineData(1, true)]
         [InlineData(2, true)]
         [InlineData(3, false)]
-        public void ShouldRetry_ShouldReturn_IfRetryCountIsTooHigh(int currentRetryCount, bool expectedResult)
+        public void ShouldRetry_ShouldReturn_IfRetryCountIsTooHigh(uint currentRetryCount, bool expectedResult)
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
@@ -42,7 +42,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         [InlineData(0, 3, 3)]
         [InlineData(1, 6.2, 7.8)]
         [InlineData(2, 12.6, 17.4)]
-        public void ShouldRetry_ShouldReturn_ExponentiallyIncreasingRetryInterval(int currentRetryCount, int min, int max)
+        public void ShouldRetry_ShouldReturn_ExponentiallyIncreasingRetryInterval(uint currentRetryCount, int min, int max)
         {
             var retry = new ExponentialRetry(TimeSpan.FromSeconds(4), 3);
 
@@ -50,6 +50,12 @@ namespace BarionClientLibrary.Tests.RetryPolicies
             retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval);
 
             Assert.InRange(retryInterval.Seconds, min, max);
+        }
+
+        [Fact]
+        public void ShouldThrowException_OnNegativeDeltaBackoff()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new ExponentialRetry(TimeSpan.FromSeconds(-4), 3));
         }
     }
 }

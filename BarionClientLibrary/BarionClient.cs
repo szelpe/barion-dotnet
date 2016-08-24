@@ -78,7 +78,7 @@ namespace BarionClientLibrary
         private async Task<BarionOperationResult> SendWithRetry(BarionOperation operation, CancellationToken cancellationToken)
         {
             var shouldRetry = false;
-            var currentRetryCount = 0;
+            uint currentRetryCount = 0;
             TimeSpan retryInterval;
             BarionOperationResult result;
 

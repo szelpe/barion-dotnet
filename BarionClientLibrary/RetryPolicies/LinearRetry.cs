@@ -5,19 +5,22 @@ namespace BarionClientLibrary.RetryPolicies
 {
     public class LinearRetry : IRetryPolicy
     {
-        private const int DefaultClientRetryCount = 3;
-        private static readonly TimeSpan DefaultClientBackoff = TimeSpan.FromSeconds(30);
+        private const uint DefaultClientRetryCount = 3;
+        private static readonly TimeSpan DefaultClientBackoff = TimeSpan.FromMilliseconds(500);
 
         private readonly TimeSpan _deltaBackoff;
-        private readonly int _maximumAttempts;
+        private readonly uint _maximumAttempts;
 
         public LinearRetry()
             : this(DefaultClientBackoff, DefaultClientRetryCount)
         {
         }
 
-        public LinearRetry(TimeSpan deltaBackoff, int maxAttempts)
+        public LinearRetry(TimeSpan deltaBackoff, uint maxAttempts)
         {
+            if (deltaBackoff.Ticks < 0)
+                throw new ArgumentOutOfRangeException(nameof(deltaBackoff), "deltaBackoff should not be negative.");
+
             _deltaBackoff = deltaBackoff;
             _maximumAttempts = maxAttempts;
         }
@@ -29,7 +32,7 @@ namespace BarionClientLibrary.RetryPolicies
         /// <param name="statusCode">The status code for the last operation.</param>
         /// <param name="retryInterval">A <see cref="TimeSpan"/> indicating the interval to wait until the next retry.</param>
         /// <returns><c>true</c> if the operation should be retried; otherwise, <c>false</c>.</returns>
-        public bool ShouldRetry(int currentRetryCount, HttpStatusCode statusCode, out TimeSpan retryInterval)
+        public bool ShouldRetry(uint currentRetryCount, HttpStatusCode statusCode, out TimeSpan retryInterval)
         {
             retryInterval = TimeSpan.Zero;
 
@@ -51,7 +54,7 @@ namespace BarionClientLibrary.RetryPolicies
         /// <param name="lastException">An <see cref="Exception"/> object that represents the last exception encountered.</param>
         /// <param name="retryInterval">A <see cref="TimeSpan"/> indicating the interval to wait until the next retry.</param>
         /// <returns><c>true</c> if the operation should be retried; otherwise, <c>false</c>.</returns>
-        public bool ShouldRetry(int currentRetryCount, Exception lastException, out TimeSpan retryInterval)
+        public bool ShouldRetry(uint currentRetryCount, Exception lastException, out TimeSpan retryInterval)
         {
             throw new NotImplementedException();
         }
