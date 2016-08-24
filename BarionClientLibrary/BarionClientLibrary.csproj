@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BarionClient.cs" />
+    <Compile Include="RetryPolicies\RetryPolicy.cs" />
     <Compile Include="RetryPolicies\ExponentialRetry.cs" />
     <Compile Include="RetryPolicies\IRetryPolicy.cs" />
     <Compile Include="Operations\BarionOperation.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,9 +15,14 @@ namespace BarionClientLibrary.Tests
 
         public int SendAsyncCallCount { get; private set; }
 
+        public Exception SendAsyncException { get; set; }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             SendAsyncCallCount++;
+            if (SendAsyncException != null)
+                throw SendAsyncException;
+
             HttpRequestMessage = request;
             if (request.Content != null)
             {

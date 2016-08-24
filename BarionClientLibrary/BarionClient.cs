@@ -19,7 +19,7 @@ namespace BarionClientLibrary
         private BarionSettings _settings;
         private IRetryPolicy _retryPolicy;
 
-        public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) {}
+        public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) { }
 
         public BarionClient(BarionSettings settings, HttpClient httpClient)
         {
@@ -79,28 +79,35 @@ namespace BarionClientLibrary
         {
             var shouldRetry = false;
             uint currentRetryCount = 0;
-            TimeSpan retryInterval;
-            BarionOperationResult result;
+            TimeSpan retryInterval = TimeSpan.Zero;
+            BarionOperationResult result = null;
 
             do
             {
                 var message = PrepareHttpRequestMessage(operation);
 
-                var responseMessage = await _httpClient.SendAsync(message, cancellationToken);
-
-                result = await CreateResultFromResponseMessage(responseMessage, operation);
-
-                if (!result.IsOperationSuccessful)
+                try
                 {
-                    shouldRetry = _retryPolicy.CreateInstance().ShouldRetry(currentRetryCount, responseMessage.StatusCode, out retryInterval);
+                    var responseMessage = await _httpClient.SendAsync(message, cancellationToken);
 
-                    if (shouldRetry)
-                    {
-                        await Task.Delay(retryInterval);
-                        currentRetryCount++;
-                    }
+                    result = await CreateResultFromResponseMessage(responseMessage, operation);
+
+                    if (!result.IsOperationSuccessful)
+                        shouldRetry = _retryPolicy.CreateInstance().ShouldRetry(currentRetryCount, responseMessage.StatusCode, out retryInterval);
+                }
+                catch (Exception ex)
+                {
+                    shouldRetry = _retryPolicy.CreateInstance().ShouldRetry(currentRetryCount, ex, out retryInterval);
+
+                    if (!shouldRetry)
+                        throw;
                 }
 
+                if (shouldRetry)
+                {
+                    await Task.Delay(retryInterval);
+                    currentRetryCount++;
+                }
             } while (shouldRetry);
 
             return result;
@@ -127,7 +134,8 @@ namespace BarionClientLibrary
         {
             var response = await responseMessage.Content.ReadAsStringAsync();
 
-            var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType, new JsonSerializerSettings {
+            var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType, new JsonSerializerSettings
+            {
                 Converters = new List<JsonConverter> { new StringEnumConverter { AllowIntegerValues = false } }
             });
 
@@ -151,7 +159,7 @@ namespace BarionClientLibrary
             }
 
             operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && (operationResult.Errors == null || !operationResult.Errors.Any());
-            
+
             return operationResult;
         }
 
@@ -193,7 +201,7 @@ namespace BarionClientLibrary
 
         protected virtual void Dispose(bool disposing)
         {
-            if(disposing && !_disposed)
+            if (disposing && !_disposed)
             {
                 _disposed = true;
 
