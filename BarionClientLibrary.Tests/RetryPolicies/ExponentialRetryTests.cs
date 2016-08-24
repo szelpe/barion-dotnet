@@ -123,14 +123,13 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         [InlineData(0, 3, 3)]
         [InlineData(1, 6.2, 7.8)]
         [InlineData(2, 12.6, 17.4)]
-        public void ShouldRetry_ShouldReturn_ExponentiallyIncreasingRetryInterval(uint currentRetryCount, int min, int max)
+        public void ShouldRetry_ShouldReturn_ExponentiallyIncreasingRetryInterval(uint currentRetryCount, double min, double max)
         {
             var retry = new ExponentialRetry(TimeSpan.FromSeconds(4), 3);
 
             TimeSpan retryInterval;
             retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval);
-
-            Assert.InRange(retryInterval.Seconds, min, max);
+            Assert.InRange(retryInterval.TotalSeconds, min, max);
         }
 
         [Fact]
