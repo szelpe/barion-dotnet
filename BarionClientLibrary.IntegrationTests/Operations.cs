@@ -28,7 +28,7 @@ namespace BarionClientLibrary.IntegrationTests
             return statusresult;
         }
 
-        public static StartPaymentOperationResult StartPayment(BarionClient barionClient, BarionSettings settings, PaymentType paymentType, TimeSpan? reservationPeriod = null)
+        public static StartPaymentOperationResult StartPayment(BarionClient barionClient, BarionSettings settings, PaymentType paymentType, TimeSpan? reservationPeriod = null, bool initiateRecurrence = false, string recurrenceId = null)
         {
             var startPaymentOperation = new StartPaymentOperation
             {
@@ -41,7 +41,9 @@ namespace BarionClientLibrary.IntegrationTests
                 Currency = Currency.HUF,
                 CallbackUrl = "http://index.hu",
                 Locale = CultureInfo.CurrentCulture,
-                RedirectUrl = "http://index.hu"
+                RedirectUrl = "http://index.hu",
+                InitiateRecurrence = initiateRecurrence,
+                RecurrenceId = recurrenceId
             };
 
             var transaction = new PaymentTransaction

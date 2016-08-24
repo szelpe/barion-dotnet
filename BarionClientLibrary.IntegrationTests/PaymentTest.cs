@@ -1,5 +1,6 @@
 ﻿using BarionClientLibrary.Operations.Common;
 using BarionClientLibrary.Operations.PaymentState;
+using BarionClientLibrary.Operations.StartPayment;
 using BarionClientTester;
 using System;
 using Xunit;
@@ -71,6 +72,22 @@ namespace BarionClientLibrary.IntegrationTests
             var finishReservationResult = Operations.FinishReservation(barionClient, beforeFinishReservationState);
             
             Assert.Equal(PaymentStatus.Succeeded, finishReservationResult.Status);
+        }
+
+        [Fact]
+        public void Recurring()
+        {
+            var barionClient = new BarionClient(_settings);
+
+            var paymentResult = Operations.StartPayment(barionClient, _settings, PaymentType.Immediate, initiateRecurrence: true, recurrenceId: "R");
+
+            BrowserScriptRunner.RunPaymentScript(paymentResult);
+
+            Assert.Equal(RecurrenceResult.Successful, paymentResult.RecurrenceResult);
+
+            var paymentResult2 = Operations.StartPayment(barionClient, _settings, PaymentType.Immediate, initiateRecurrence: false, recurrenceId: "R");
+
+            Assert.Equal(PaymentStatus.Succeeded, paymentResult2.Status);
         }
     }
 }
