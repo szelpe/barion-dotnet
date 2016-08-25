@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NSubstitute;
 using BarionClientLibrary.RetryPolicies;
 using Xunit;
+using System.Threading;
 
 namespace BarionClientLibrary.Tests
 {
@@ -65,6 +66,31 @@ namespace BarionClientLibrary.Tests
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
             Assert.Equal(4, _httpMessageHandler.SendAsyncCallCount);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_ShouldNotRetrySending_IfCancellationRequested()
+        {
+            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
+            _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+
+            TimeSpan timespan;
+            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
+                .ReturnsForAnyArgs(args => {
+                    var retryCount = (uint)args[0];
+                    args[2] = TimeSpan.FromMilliseconds(1);
+
+                    if (retryCount < 3)
+                        return true;
+
+                    return false;
+                });
+
+            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation(), cts.Token);
+
+            Assert.Equal(1, _httpMessageHandler.SendAsyncCallCount);
         }
 
         [Fact]

@@ -77,6 +77,7 @@ namespace BarionClientLibrary
 
         private async Task<BarionOperationResult> SendWithRetry(BarionOperation operation, CancellationToken cancellationToken)
         {
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var shouldRetry = false;
             uint currentRetryCount = 0;
             TimeSpan retryInterval = TimeSpan.Zero;
@@ -88,7 +89,7 @@ namespace BarionClientLibrary
 
                 try
                 {
-                    var responseMessage = await _httpClient.SendAsync(message, cancellationToken);
+                    var responseMessage = await _httpClient.SendAsync(message, cts.Token);
 
                     result = await CreateResultFromResponseMessage(responseMessage, operation);
 
@@ -108,7 +109,7 @@ namespace BarionClientLibrary
                     await Task.Delay(retryInterval);
                     currentRetryCount++;
                 }
-            } while (shouldRetry);
+            } while (shouldRetry && !cts.IsCancellationRequested);
 
             return result;
         }
