@@ -234,6 +234,18 @@ namespace BarionClientLibrary.Tests
         }
 
         [Fact]
+        public async Task ExecuteAsync_ShouldNotReturnNull_EvenIfErrorOccured()
+        {
+            var operation = PrepareValidOperation();
+            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
+            _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.InternalServerError;
+
+            var result = await _barionClient.ExecuteAsync<TestOperationResult>(operation);
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_ShouldSetOperationSuccessFalse_OnErrorStatusCode()
         {
             var operation = PrepareValidOperation();

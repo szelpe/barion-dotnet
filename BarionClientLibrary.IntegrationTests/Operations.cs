@@ -91,7 +91,7 @@ namespace BarionClientLibrary.IntegrationTests
             Console.WriteLine("Sending Refund...");
             var refundResult = barionClient.ExecuteAsync<RefundOperationResult>(refundOpertation).Result;
 
-            if (!result.IsOperationSuccessful)
+            if (!refundResult.IsOperationSuccessful)
                 throw new Exception("Refund operation was not successful");
 
             return refundResult;

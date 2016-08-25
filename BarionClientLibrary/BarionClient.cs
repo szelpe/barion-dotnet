@@ -181,23 +181,10 @@ namespace BarionClientLibrary
             });
 
             if (operationResult == null)
-                return new BarionOperationResult { IsOperationSuccessful = false, Errors = new[] { new Error { Title = "Deserialized result was null" } } };
+                return CreateFailedOperationResult(operation.ResultType, "Deserialized result was null");
 
             if (!responseMessage.IsSuccessStatusCode && operationResult.Errors == null)
-            {
-                return new BarionOperationResult
-                {
-                    IsOperationSuccessful = false,
-                    Errors = new[] {
-                        new Error
-                        {
-                            ErrorCode = responseMessage.StatusCode.ToString(),
-                            Title = responseMessage.ReasonPhrase,
-                            Description = response
-                        }
-                    }
-                };
-            }
+                return CreateFailedOperationResult(operation.ResultType, responseMessage.StatusCode.ToString(), responseMessage.ReasonPhrase, response);
 
             operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && (operationResult.Errors == null || !operationResult.Errors.Any());
 
@@ -231,6 +218,23 @@ namespace BarionClientLibrary
 
             if (operation.Method == null)
                 throw new ArgumentNullException(nameof(operation.Method));
+        }
+
+        private BarionOperationResult CreateFailedOperationResult(Type resultType, string errorCode, string title = null, string description = null)
+        {
+            var result = Activator.CreateInstance(resultType) as BarionOperationResult;
+            result.IsOperationSuccessful = false;
+            result.Errors = new[] 
+            {
+                new Error
+                {
+                    ErrorCode = errorCode,
+                    Title = title,
+                    Description = description
+                }
+            };
+
+            return result;
         }
 
         #region IDisposable members
