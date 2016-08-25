@@ -3,6 +3,7 @@ using BarionClientLibrary.Operations.Common;
 using BarionClientLibrary.Operations.PaymentState;
 using BarionClientLibrary.Operations.Refund;
 using BarionClientLibrary.Operations.StartPayment;
+using BarionClientLibrary.RetryPolicies;
 using System;
 using System.Globalization;
 
@@ -21,6 +22,7 @@ namespace BarionClientTester
 
             using (var barionClient = new BarionClient(settings))
             {
+                barionClient.RetryPolicy = new NoRetry();
                 var startPaymentOperation = new StartPaymentOperation
                 {
                     GuestCheckOut = true,

@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace BarionClientLibrary
 {
@@ -255,7 +256,7 @@ namespace BarionClientLibrary
             if (operation.ResultType == null)
                 throw new ArgumentNullException(nameof(operation.ResultType));
 
-            if (!operation.ResultType.IsSubclassOf(typeof(BarionOperationResult)))
+            if (!operation.ResultType.GetTypeInfo().IsSubclassOf(typeof(BarionOperationResult)))
                 throw new ArgumentException("ResultType should be a subclass of BarionOperationResult.", nameof(operation.ResultType));
 
             if (operation.Method == null)

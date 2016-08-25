@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Globalization;
 using Newtonsoft.Json;
-using NSubstitute;
-using BarionClientLibrary.RetryPolicies;
 using Xunit;
 using System.Threading;
 
@@ -18,14 +16,13 @@ namespace BarionClientLibrary.Tests
         private HttpClient _httpClient;
         private TestHttpMessageHandler _httpMessageHandler;
         private BarionSettings _barionClientSettings;
-        private IRetryPolicy _retryPolicy;
+        private TestRetryPolicy _retryPolicy;
 
         public BarionClientTests()
         {
             _httpMessageHandler = new TestHttpMessageHandler();
             _httpClient = new HttpClient(_httpMessageHandler);
-            _retryPolicy = Substitute.For<IRetryPolicy>();
-            _retryPolicy.CreateInstance().Returns(_retryPolicy);
+            _retryPolicy = new TestRetryPolicy();
 
             _barionClientSettings = new BarionSettings
             {
@@ -51,17 +48,14 @@ namespace BarionClientLibrary.Tests
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
             _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
-            TimeSpan timespan;
-            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
-                .ReturnsForAnyArgs(args => {
-                    var retryCount = (uint)args[0];
-                    args[2] = TimeSpan.FromMilliseconds(1);
 
+            _retryPolicy.ShouldRetryMock =
+                (retryCount, statusCode) => {
                     if (retryCount < 3)
                         return true;
                     
                     return false;
-                });
+                };
 
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
@@ -75,18 +69,14 @@ namespace BarionClientLibrary.Tests
             _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
             var cts = new CancellationTokenSource();
             cts.Cancel();
-
-            TimeSpan timespan;
-            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
-                .ReturnsForAnyArgs(args => {
-                    var retryCount = (uint)args[0];
-                    args[2] = TimeSpan.FromMilliseconds(1);
-
+            
+            _retryPolicy.ShouldRetryMock =
+                (retryCount, statusCode) => {
                     if (retryCount < 3)
                         return true;
 
                     return false;
-                });
+                };
 
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation(), cts.Token);
 
@@ -98,18 +88,14 @@ namespace BarionClientLibrary.Tests
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
             _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
-
-            TimeSpan timespan;
-            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
-                .ReturnsForAnyArgs(args => {
-                    var retryCount = (uint)args[0];
-                    args[2] = TimeSpan.FromMilliseconds(75);
-
+            _retryPolicy.RetryInterval = TimeSpan.FromMilliseconds(75);
+            _retryPolicy.ShouldRetryMock =
+                (retryCount, statusCode) => {
                     if (retryCount < 3)
                         return true;
 
                     return false;
-                });
+                };
 
             _barionClient.Timeout = TimeSpan.FromMilliseconds(50);
             var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
@@ -122,18 +108,14 @@ namespace BarionClientLibrary.Tests
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
             _httpMessageHandler.SendAsyncException = new Exception();
-
-            TimeSpan timespan;
-            _retryPolicy.ShouldRetry(0, default(Exception), out timespan)
-                .ReturnsForAnyArgs(args => {
-                    var retryCount = (uint)args[0];
-                    args[2] = TimeSpan.FromMilliseconds(1);
-
+            
+            _retryPolicy.ShouldRetryExceptionMock =
+                (retryCount, exception) => {
                     if (retryCount < 3)
                         return true;
 
                     return false;
-                });
+                };
 
             await Assert.ThrowsAsync<Exception>(async () => await _barionClient.ExecuteAsync(new StartPaymentOperation()));
 
@@ -309,7 +291,7 @@ namespace BarionClientLibrary.Tests
             Assert.Equal(new DateTime(2016, 8, 20, 11, 36, 14, 333), result.DateTimeProperty);
             Assert.Equal("a nice string", result.StringProperty);
             Assert.Equal(ConsoleColor.Red, result.EnumProperty);
-            Assert.Equal(CultureInfo.CreateSpecificCulture("hu-HU"), result.CultureInfoProperty);
+            Assert.Equal(new CultureInfo("hu-HU"), result.CultureInfoProperty);
             Assert.Equal(Guid.Parse("462063d5b915410cae9d3bd423583f0f"), result.GuidProperty);
             Assert.Equal(TimeSpan.FromDays(1), result.TimeSpanProtperty);
         }

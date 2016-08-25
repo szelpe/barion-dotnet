@@ -45,10 +45,6 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NSubstitute, Version=1.10.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\NSubstitute.1.10.0.0\lib\net45\NSubstitute.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -93,6 +89,7 @@
     <Compile Include="TestHttpMessageHandler.cs" />
     <Compile Include="TestOperation.cs" />
     <Compile Include="TestOperationResult.cs" />
+    <Compile Include="TestRetryPolicy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BarionClientLibrary\BarionClientLibrary.csproj">
