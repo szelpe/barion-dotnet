@@ -76,6 +76,20 @@ You can choose the retry policy to use from the list below:
 barionClient.RetryPolicy = new LinearRetry(TimeSpan.FromMilliseconds(500), 3);
 ```
 
+## Timeout
+
+The default timeout for every operation is 120s. You can change the timeout by settings the `Timeout` property of the `BarionClient`:
+
+``` csharp
+barionClient.Timeout = TimeSpan.FromSeconds(15);
+```
+
+You can disable the timeout by using `InfiniteTimeSpan`:
+
+``` csharp
+barionClient.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
+```
+
 ## Extending the API
 
 You can easily add your own operations by creating a new subclass of `BarionOperation`. E.g. if you want to support the [Reject](https://doksi.barion.com/Payment-Reject-v2) payment operation you need to create a new class:

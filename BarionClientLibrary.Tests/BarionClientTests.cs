@@ -94,6 +94,30 @@ namespace BarionClientLibrary.Tests
         }
 
         [Fact]
+        public async Task ExecuteAsync_ShouldNotRetrySending_IfTimeoutReached()
+        {
+            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
+            _httpMessageHandler.HttpResponseMessage.StatusCode = HttpStatusCode.RequestTimeout;
+
+            TimeSpan timespan;
+            _retryPolicy.ShouldRetry(0, default(HttpStatusCode), out timespan)
+                .ReturnsForAnyArgs(args => {
+                    var retryCount = (uint)args[0];
+                    args[2] = TimeSpan.FromMilliseconds(75);
+
+                    if (retryCount < 3)
+                        return true;
+
+                    return false;
+                });
+
+            _barionClient.Timeout = TimeSpan.FromMilliseconds(50);
+            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
+
+            Assert.Equal(1, _httpMessageHandler.SendAsyncCallCount);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_ShouldRetrySending_IfPolicyIndicates_AfterAnException()
         {
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();

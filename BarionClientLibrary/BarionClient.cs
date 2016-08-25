@@ -18,6 +18,10 @@ namespace BarionClientLibrary
         private HttpClient _httpClient;
         private BarionSettings _settings;
         private IRetryPolicy _retryPolicy;
+        private TimeSpan _timeout;
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(120);
+        private static readonly TimeSpan MaxTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
+        private static readonly TimeSpan InfiniteTimeout = System.Threading.Timeout.InfiniteTimeSpan;
 
         public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) { }
 
@@ -40,6 +44,8 @@ namespace BarionClientLibrary
             _settings = settings;
 
             _retryPolicy = new ExponentialRetry();
+
+            _timeout = DefaultTimeout;
         }
 
         public IRetryPolicy RetryPolicy
@@ -51,9 +57,26 @@ namespace BarionClientLibrary
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException(nameof(RetryPolicy));
+                    throw new ArgumentNullException(nameof(value));
 
                 _retryPolicy = value;
+            }
+        }
+
+        public TimeSpan Timeout
+        {
+            get
+            {
+                return _timeout;
+            }
+            set
+            {
+                if (value != InfiniteTimeout && (value <= TimeSpan.Zero || value > MaxTimeout))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                _timeout = value;
             }
         }
 
@@ -92,7 +115,9 @@ namespace BarionClientLibrary
 
         private async Task<BarionOperationResult> SendWithRetry(BarionOperation operation, CancellationToken cancellationToken)
         {
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            SetTimeout(linkedCts);
+
             var shouldRetry = false;
             uint currentRetryCount = 0;
             TimeSpan retryInterval = TimeSpan.Zero;
@@ -104,7 +129,7 @@ namespace BarionClientLibrary
 
                 try
                 {
-                    var responseMessage = await _httpClient.SendAsync(message, cts.Token);
+                    var responseMessage = await _httpClient.SendAsync(message, linkedCts.Token);
 
                     result = await CreateResultFromResponseMessage(responseMessage, operation);
 
@@ -124,7 +149,7 @@ namespace BarionClientLibrary
                     await Task.Delay(retryInterval);
                     currentRetryCount++;
                 }
-            } while (shouldRetry && !cts.IsCancellationRequested);
+            } while (shouldRetry && !linkedCts.IsCancellationRequested);
 
             return result;
         }
@@ -177,6 +202,14 @@ namespace BarionClientLibrary
             operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && (operationResult.Errors == null || !operationResult.Errors.Any());
 
             return operationResult;
+        }
+
+        private void SetTimeout(CancellationTokenSource cancellationTokenSource)
+        {
+            if (_timeout != InfiniteTimeout)
+            {
+                cancellationTokenSource.CancelAfter(_timeout);
+            }
         }
 
         private void ValidateOperation(BarionOperation operation)
