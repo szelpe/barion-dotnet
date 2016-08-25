@@ -49,7 +49,7 @@ using(var barionClient = new BarionClient(barionSettings))
 
 	// add payment parameters to startPayment
 
-	var result = await barionClient.ExecuteAsync(startPayment);
+	var result = await barionClient.ExecuteAsync<StartPaymentOperationResult>(startPayment);
 
 	if(result.IsOperationSuccessful)
 	{
@@ -61,6 +61,24 @@ using(var barionClient = new BarionClient(barionSettings))
 ## Sample website
 
 You can find a complete sample website under the `Samples` directory. Check [BarionController](https://github.com/szelpe/barion-dotnet/blob/master/Samples/SampleWebsite/Controllers/BarionController.cs) for a detailed example on how to use the client.
+
+## Retry Policies
+
+BarionClient comes with built-in retry policies. By default, if a Barion operation fails due to a transient error, it will retry the operation automatically.
+
+You can choose the retry policy to use from the list below:
+
+- **Exponential retry (default)**: the delay between each retry grows exponentially, e.g. `~3s -> ~7s -> ~15s -> ~31s`. The exponential retry policy is well suited for background operations, which are not time sensitive.
+- **Linear retry**: the delay between each retry is fixed, e.g. `0.5s -> 0.5s -> 0.5s`. The linear retry policy should be used in user interactive operations. If a user is waiting for the result, it's usually better to fail fast than letting the user wait for minutes.
+- **No retry**: will not retry the failed operations. This option should be used if a retry strategy is implemented on a higher level.
+
+``` csharp
+var barionSettings = new BarionSettings
+    {
+        ...
+        RetryPolicy = new LinearRetry(TimeSpan.FromMilliseconds(500), 3)
+    };
+```
 
 ## Extending the API
 
