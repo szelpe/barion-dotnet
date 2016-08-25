@@ -73,11 +73,7 @@ You can choose the retry policy to use from the list below:
 - **No retry**: will not retry the failed operations. This option should be used if a retry strategy is implemented on a higher level.
 
 ``` csharp
-var barionSettings = new BarionSettings
-    {
-        ...
-        RetryPolicy = new LinearRetry(TimeSpan.FromMilliseconds(500), 3)
-    };
+barionClient.RetryPolicy = new LinearRetry(TimeSpan.FromMilliseconds(500), 3);
 ```
 
 ## Extending the API

@@ -39,7 +39,22 @@ namespace BarionClientLibrary
 
             _settings = settings;
 
-            _retryPolicy = settings.RetryPolicy ?? new ExponentialRetry();
+            _retryPolicy = new ExponentialRetry();
+        }
+
+        public IRetryPolicy RetryPolicy
+        {
+            get
+            {
+                return _retryPolicy;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(RetryPolicy));
+
+                _retryPolicy = value;
+            }
         }
 
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation)

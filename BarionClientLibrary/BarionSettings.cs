@@ -1,5 +1,4 @@
-﻿using BarionClientLibrary.RetryPolicies;
-using System;
+﻿using System;
 
 namespace BarionClientLibrary
 {
@@ -10,7 +9,5 @@ namespace BarionClientLibrary
         public Uri BaseUrl { get; set; }
 
         public string Payee { get; set; }
-
-        public IRetryPolicy RetryPolicy { get; set; }
     }
 }

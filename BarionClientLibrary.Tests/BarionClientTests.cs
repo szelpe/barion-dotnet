@@ -30,10 +30,10 @@ namespace BarionClientLibrary.Tests
             _barionClientSettings = new BarionSettings
             {
                 BaseUrl = new Uri("https://api.barion.com"),
-                POSKey = Guid.NewGuid(),
-                RetryPolicy = _retryPolicy
+                POSKey = Guid.NewGuid()
             };
             _barionClient = new BarionClient(_barionClientSettings, _httpClient);
+            _barionClient.RetryPolicy = _retryPolicy;
         }
 
         [Fact]
