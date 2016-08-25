@@ -3,6 +3,9 @@ using System;
 
 namespace BarionClientLibrary.Operations.FinishReservation
 {
+    /// <summary>
+    /// Represents the result of the finish reservation operation.
+    /// </summary>
     public class FinishReservationOperationResult : BarionOperationResult
     {
         public bool IsSuccessful { get; set; }

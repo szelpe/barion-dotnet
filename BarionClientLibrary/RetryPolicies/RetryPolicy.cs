@@ -7,6 +7,9 @@ using System.Net.Sockets;
 
 namespace BarionClientLibrary.RetryPolicies
 {
+    /// <summary>
+    /// Defines a base class for retry policies.
+    /// </summary>
     public abstract class RetryPolicy : IRetryPolicy
     {
         protected readonly uint _maximumAttempts;

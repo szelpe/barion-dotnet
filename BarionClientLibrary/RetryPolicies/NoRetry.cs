@@ -3,6 +3,9 @@ using System.Net;
 
 namespace BarionClientLibrary.RetryPolicies
 {
+    /// <summary>
+    /// Represents a retry policy that performs no retries.
+    /// </summary>
     public class NoRetry : IRetryPolicy
     {
         public bool ShouldRetry(uint currentRetryCount, HttpStatusCode statusCode, out TimeSpan retryInterval)

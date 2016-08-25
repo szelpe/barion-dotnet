@@ -2,6 +2,9 @@
 
 namespace BarionClientLibrary.RetryPolicies
 {
+    /// <summary>
+    /// Defines a retry policy with randomized exponential back-off scheme.
+    /// </summary>
     public class ExponentialRetry : RetryPolicy
     {
         private const uint DefaultClientRetryCount = 3;
@@ -11,11 +14,19 @@ namespace BarionClientLibrary.RetryPolicies
 
         private readonly TimeSpan _deltaBackoff;
 
+        /// <summary>
+        /// Initializes a new instance of the BarionClientLibrary.RetryPolicies.ExponentialRetry class.
+        /// </summary>
         public ExponentialRetry()
             : this(DefaultClientBackoff, DefaultClientRetryCount)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the BarionClientLibrary.RetryPolicies.ExponentialRetry class.
+        /// </summary>
+        /// <param name="deltaBackoff">A <see cref="TimeSpan"/> specifying the back-off interval between retries.</param>
+        /// <param name="maxAttempts">The maximum number of retry attempts.</param>
         public ExponentialRetry(TimeSpan deltaBackoff, uint maxAttempts) : base(maxAttempts)
         {
             if (deltaBackoff.Ticks < 0)

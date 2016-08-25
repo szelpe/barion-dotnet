@@ -5,6 +5,12 @@ using System.Net.Http;
 
 namespace BarionClientLibrary.Operations.StartPayment
 {
+    /// <summary>
+    /// Represents a start payment operation.
+    /// </summary>
+    /// <remarks>
+    /// View the full documentation of the operation here: https://doksi.barion.com/Payment-Start-v2
+    /// </remarks>
     public class StartPaymentOperation : BarionOperation
     {
         public PaymentType PaymentType { get; set; }

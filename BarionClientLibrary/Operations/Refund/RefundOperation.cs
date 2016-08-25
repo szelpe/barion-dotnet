@@ -3,6 +3,12 @@ using System.Net.Http;
 
 namespace BarionClientLibrary.Operations.Refund
 {
+    /// <summary>
+    /// Represents a refund operation.
+    /// </summary>
+    /// <remarks>
+    /// View the full documentation of the operation here: https://doksi.barion.com/Payment-Refund-v2
+    /// </remarks>
     public class RefundOperation : BarionOperation
     {
         public Guid PaymentId { get; set; }

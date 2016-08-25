@@ -3,6 +3,9 @@ using System.Net;
 
 namespace BarionClientLibrary.RetryPolicies
 {
+    /// <summary>
+    /// Defines an interface for retry policies.
+    /// </summary>
     public interface IRetryPolicy
     {
         /// <summary>

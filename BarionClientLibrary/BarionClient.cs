@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace BarionClientLibrary
 {
+    /// <summary>
+    /// Provides a base class for executing Barion operations.
+    /// </summary>
     public class BarionClient : IDisposable
     {
         private HttpClient _httpClient;
@@ -23,8 +26,17 @@ namespace BarionClientLibrary
         private static readonly TimeSpan MaxTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
         private static readonly TimeSpan InfiniteTimeout = System.Threading.Timeout.InfiniteTimeSpan;
 
+        /// <summary>
+        /// Initializes a new instance of the BarionClientLibrary.BarionClient class.
+        /// </summary>
+        /// <param name="settings">Barion specific settings.</param>
         public BarionClient(BarionSettings settings) : this(settings, new HttpClient()) { }
 
+        /// <summary>
+        /// Initializes a new instance of the BarionClientLibrary.BarionClient class.
+        /// </summary>
+        /// <param name="settings">Barion specific settings.</param>
+        /// <param name="httpClient">HttpClient instance to use for sending HTTP requests.</param>
         public BarionClient(BarionSettings settings, HttpClient httpClient)
         {
             if (httpClient == null)
@@ -48,6 +60,9 @@ namespace BarionClientLibrary
             _timeout = DefaultTimeout;
         }
 
+        /// <summary>
+        /// Gets or sets the retry policy to use on transient failures.
+        /// </summary>
         public IRetryPolicy RetryPolicy
         {
             get
@@ -63,6 +78,9 @@ namespace BarionClientLibrary
             }
         }
 
+        /// <summary>
+        /// Gets or sets the number of milliseconds to wait before the request times out.
+        /// </summary>
         public TimeSpan Timeout
         {
             get
@@ -80,6 +98,12 @@ namespace BarionClientLibrary
             }
         }
 
+        /// <summary>
+        /// Executes a Barion operation.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result of the Barion operation.</typeparam>
+        /// <param name="operation">The Barion operation to execute.</param>
+        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation)
             where TResult : BarionOperationResult
         {
@@ -89,11 +113,23 @@ namespace BarionClientLibrary
             return await ExecuteAsync(operation) as TResult;
         }
 
+        /// <summary>
+        /// Executes a Barion operation.
+        /// </summary>
+        /// <param name="operation">The Barion operation to execute.</param>
+        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation)
         {
             return await ExecuteAsync(operation, default(CancellationToken));
         }
 
+        /// <summary>
+        /// Executes a Barion operation.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result of the Barion operation.</typeparam>
+        /// <param name="operation">The Barion operation to execute.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
+        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation, CancellationToken cancellationToken)
             where TResult : BarionOperationResult
         {
@@ -103,6 +139,12 @@ namespace BarionClientLibrary
             return await ExecuteAsync(operation, cancellationToken) as TResult;
         }
 
+        /// <summary>
+        /// Executes a Barion operation.
+        /// </summary>
+        /// <param name="operation">The Barion operation to execute.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
+        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation, CancellationToken cancellationToken)
         {
             CheckDisposed();
@@ -241,6 +283,9 @@ namespace BarionClientLibrary
 
         private volatile bool _disposed;
 
+        /// <summary>
+        /// Releases the unmanaged resources and disposes of the managed resources used by the BarionClient.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -252,6 +297,10 @@ namespace BarionClientLibrary
             Dispose(false);
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the BarionClient and optionally disposes of the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to releases only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing && !_disposed)

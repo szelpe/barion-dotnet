@@ -3,6 +3,12 @@ using System.Net.Http;
 
 namespace BarionClientLibrary.Operations.FinishReservation
 {
+    /// <summary>
+    /// Represents a finish reservation operation.
+    /// </summary>
+    /// <remarks>
+    /// View the full documentation of the operation here: https://doksi.barion.com/Payment-FinishReservation-v2
+    /// </remarks>
     public class FinishReservationOperation : BarionOperation
     {
         public Guid PaymentId { get; set; }

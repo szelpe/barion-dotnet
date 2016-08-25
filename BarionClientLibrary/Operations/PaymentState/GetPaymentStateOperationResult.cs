@@ -4,6 +4,9 @@ using System.Globalization;
 
 namespace BarionClientLibrary.Operations.PaymentState
 {
+    /// <summary>
+    /// Represents the result of get payment state operation.
+    /// </summary>
     public class GetPaymentStateOperationResult : BarionOperationResult
     {
         public Guid PaymentId { get; set; }

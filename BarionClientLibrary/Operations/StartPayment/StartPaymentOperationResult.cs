@@ -3,6 +3,9 @@ using System;
 
 namespace BarionClientLibrary.Operations.StartPayment
 {
+    /// <summary>
+    /// Represents the result of the start payment operation.
+    /// </summary>
     public class StartPaymentOperationResult : BarionOperationResult
     {
         public Guid PaymentId { get; set; }
