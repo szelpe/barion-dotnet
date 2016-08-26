@@ -116,7 +116,7 @@ namespace BarionClientTester
 
                 Console.ResetColor();
                 Console.WriteLine("Refund result:");
-                if (result.IsOperationSuccessful)
+                if (result3.IsOperationSuccessful)
                     Console.ForegroundColor = ConsoleColor.Green;
                 else
                     Console.ForegroundColor = ConsoleColor.Red;
