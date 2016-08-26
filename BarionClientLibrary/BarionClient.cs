@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using BarionClientLibrary.Helpers;
 
 namespace BarionClientLibrary
 {
@@ -206,7 +207,7 @@ namespace BarionClientLibrary
                 var body = JsonConvert.SerializeObject(operation, Formatting.Indented, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    Converters = new List<JsonConverter> { new StringEnumConverter() }
+                    Converters = new List<JsonConverter> { new StringEnumConverter(), new CultureInfoJsonConverter() }
                 });
                 message.Content = new StringContent(body, Encoding.UTF8, "application/json");
             }
@@ -220,7 +221,7 @@ namespace BarionClientLibrary
 
             var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType, new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new StringEnumConverter { AllowIntegerValues = false } }
+                Converters = new List<JsonConverter> { new StringEnumConverter { AllowIntegerValues = false }, new CultureInfoJsonConverter() }
             });
 
             if (operationResult == null)

@@ -40,10 +40,6 @@
     <AssemblyOriginatorKeyFile>BarionClientSignKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BarionClient.cs" />
+    <Compile Include="Helpers\CultureInfoJsonConverter.cs" />
     <Compile Include="RetryPolicies\RetryPolicy.cs" />
     <Compile Include="RetryPolicies\ExponentialRetry.cs" />
     <Compile Include="RetryPolicies\IRetryPolicy.cs" />
@@ -93,9 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BarionClientLibrary.nuspec" />
+    <None Include="BarionClientLibrary.project.json" />
     <None Include="BarionClientLibrary.ruleset" />
     <None Include="BarionClientSignKey.snk" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

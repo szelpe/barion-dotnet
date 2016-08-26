@@ -297,6 +297,19 @@ namespace BarionClientLibrary.Tests
         }
 
         [Fact]
+        public async Task ExecuteAsync_ShouldSerialize_CultureInfo()
+        {
+            var operation = PrepareValidOperation();
+            operation.TestCultureInfo = new CultureInfo("hu-HU");
+            operation.MethodReturns = HttpMethod.Post;
+            _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
+
+            var result = await _barionClient.ExecuteAsync<TestOperationResult>(operation);
+
+            Assert.Contains("\"TestCultureInfo\": \"hu-HU\"", _httpMessageHandler.HttpRequestBody);
+        }
+
+        [Fact]
         public void ExecuteAsync_ShouldNotAllowNumberAsAnEnum()
         {
             var operation = PrepareValidOperation();

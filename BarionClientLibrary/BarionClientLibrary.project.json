@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "Newtonsoft.Json": "6.0.4"
+  },
+  "runtimes": { "win": {} },
+  "frameworks": { "net452": {} }
+}

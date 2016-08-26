@@ -2,6 +2,7 @@
 using System.Net.Http;
 using BarionClientLibrary.Operations;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace BarionClientLibrary.Tests
 {
@@ -21,6 +22,8 @@ namespace BarionClientLibrary.Tests
 
         [JsonIgnore]
         public Type ResultTypeReturns { get; set; }
+
+        public CultureInfo TestCultureInfo { get; set; }
     }
 
     internal class TestOperationWithEnum : TestOperation

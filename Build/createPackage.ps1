@@ -6,7 +6,10 @@ param(
 if($rebuild)
 {
 	$env:Path=$env:Path + ";$env:ProgramFiles\MSBuild\14.0\bin"
+	$env:Path=$env:Path + ";$env:ProgramFiles (x86)\MSBuild\14.0\bin"
 	MSBuild.exe BarionClient.sln /t:Clean,Build /p:Configuration=Release
+    dotnet restore
+    dotnet build BarionClientLibrary\project.json -c Release
 }
 
 # Download nuget.exe if it's not in the PATH
