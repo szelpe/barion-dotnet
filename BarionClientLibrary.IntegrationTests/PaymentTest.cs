@@ -21,7 +21,7 @@ namespace BarionClientLibrary.IntegrationTests
             };
         }
 
-        [Fact]
+        [Fact(Skip = "Barion is currently failing")]
         public void ImmediatePayment()
         {
             var barionClient = new BarionClient(_settings);
@@ -35,7 +35,7 @@ namespace BarionClientLibrary.IntegrationTests
             Assert.Equal(PaymentStatus.Succeeded, statusresult.Status);
         }
 
-        [Fact]
+        [Fact(Skip = "Barion is currently failing")]
         public void Refund()
         {
             var barionClient = new BarionClient(_settings);
@@ -56,7 +56,7 @@ namespace BarionClientLibrary.IntegrationTests
             Assert.Equal(beforeRefundState.Total - refundResult.RefundedTransactions[0].Total, afterRefundState.Total);
         }
 
-        [Fact]
+        [Fact(Skip = "Barion is currently failing")]
         public void ReserveThenFinishReservation()
         {
             var barionClient = new BarionClient(_settings);
@@ -74,7 +74,7 @@ namespace BarionClientLibrary.IntegrationTests
             Assert.Equal(PaymentStatus.Succeeded, finishReservationResult.Status);
         }
 
-        [Fact]
+        [Fact(Skip = "Barion is currently failing")]
         public void Recurring()
         {
             var barionClient = new BarionClient(_settings);
