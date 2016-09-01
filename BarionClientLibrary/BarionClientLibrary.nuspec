@@ -14,14 +14,20 @@
     <copyright>Copyright 2016</copyright>
     <tags>Barion Payment</tags>
     <language>en-US</language>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Net.Http" />
+    </frameworkAssemblies>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="Newtonsoft.Json" version="6.0.4" />
       </group>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="Newtonsoft.Json" version="6.0.4" />
+      </group>
       <group targetFramework=".NETStandard1.3">
-        <dependency id="System.Net.Http" version="4.1.0" />
+        <dependency id="System.Net.Http" version="4.0.0" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="System.Net.Requests" version="4.0.11" />
+        <dependency id="System.Net.Requests" version="4.0.10" />
         <dependency id="System.Runtime.InteropServices" version="4.1.0" />
       </group>
     </dependencies>
@@ -29,5 +35,6 @@
     <files>
         <file src="bin\Release\BarionClient.*" target="lib\net45\" />
         <file src="bin\Release\netstandard1.3\BarionClient.*" target="lib\netstandard1.3\" />   
+        <file src="bin\Release\net46\BarionClient.*" target="lib\net46\" />   
     </files>
 </package>

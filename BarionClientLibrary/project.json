@@ -4,16 +4,24 @@
   "buildOptions": {
     "outputName": "BarionClient"
   },
-  "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
-    "System.Net.Http": "4.1.0",
-    "System.Net.Requests": "4.0.11",
-    "System.Runtime.InteropServices": "4.1.0"
-  },
 
   "frameworks": {
     "netstandard1.3": {
-      "imports": "dnxcore50"
+      "imports": "dnxcore50",
+      "dependencies": {
+        "Newtonsoft.Json": "9.0.1",
+        "System.Net.Http": "4.0.0",
+        "System.Net.Requests": "4.0.10",
+        "System.Runtime.InteropServices": "4.1.0"
+      }
+    },
+    "net46": {
+      "dependencies": {
+        "Newtonsoft.Json": "6.0.4"
+      },
+      "frameworkAssemblies": {
+        "System.Net.Http": "4.0.0.0"
+      }
     }
   }
 }
