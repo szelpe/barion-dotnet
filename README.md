@@ -16,6 +16,10 @@ The Barion .NET library makes it easy to add Barion payment to your .NET applica
 - .NET 4.5 or .NET Standard 1.3 and above
 - Newtonsoft.Json
 
+## Release Notes
+
+[Release Notes](https://github.com/szelpe/barion-dotnet/blob/master/ReleaseNotes.md)
+
 ## Installation
 
 The easiest way to install is to use NuGet:

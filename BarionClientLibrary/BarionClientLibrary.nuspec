@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <title>Barion .NET Client</title>
     <description>The Barion .NET library makes it easy to add Barion payment to your .NET application.</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>https://github.com/szelpe/barion-dotnet/blob/master/ReleaseNotes.md</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>Barion Payment</tags>
     <language>en-US</language>
