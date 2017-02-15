@@ -8,6 +8,7 @@
         Canceled,
         Succeeded,
         Failed,
-        Deleted
+        Deleted,
+        Expired
     }
 }
