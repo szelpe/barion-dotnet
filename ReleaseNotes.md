@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.4
+
+- Updated payment states
+
 ## v1.3
 
 - Added retry policies
