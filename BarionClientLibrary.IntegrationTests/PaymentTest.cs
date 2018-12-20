@@ -9,7 +9,7 @@ namespace BarionClientLibrary.IntegrationTests
 {
     public class PaymentTests
     {
-        private BarionSettings _settings;
+        private readonly BarionSettings _settings;
 
         public PaymentTests()
         {
