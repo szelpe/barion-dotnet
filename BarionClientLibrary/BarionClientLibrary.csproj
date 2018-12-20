@@ -1,102 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B05989C7-800F-4013-A60B-1C9B019BD2E2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BarionClientLibrary</RootNamespace>
+    <AssemblyTitle>BarionClient</AssemblyTitle>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>BarionClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>BarionClientLibrary.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\BarionClient.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>BarionClientLibrary.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>BarionClientSignKey.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>BarionClient</PackageId>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'net45' ">$(DefineConstants);NET45</DefineConstants>
+    <Authors>Peter Szel</Authors>
+    <PackageLicenseUrl>https://github.com/szelpe/barion-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/szelpe/barion-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/szelpe/barion-dotnet</RepositoryUrl>
+    <PackageReleaseNotes>https://github.com/szelpe/barion-dotnet/blob/master/ReleaseNotes.md</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageTags>Barion Payment</PackageTags>
+    <Version>1.1.0</Version>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
+    <None Include="App.config" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.0" />
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BarionClient.cs" />
-    <Compile Include="Helpers\CultureInfoJsonConverter.cs" />
-    <Compile Include="RetryPolicies\RetryPolicy.cs" />
-    <Compile Include="RetryPolicies\ExponentialRetry.cs" />
-    <Compile Include="RetryPolicies\IRetryPolicy.cs" />
-    <Compile Include="Operations\BarionOperation.cs" />
-    <Compile Include="Operations\BarionOperationResult.cs" />
-    <Compile Include="BarionSettings.cs" />
-    <Compile Include="Operations\Common\Error.cs" />
-    <Compile Include="Operations\FinishReservation\FinishReservationOperation.cs" />
-    <Compile Include="Operations\FinishReservation\FinishReservationOperationResult.cs" />
-    <Compile Include="Operations\FinishReservation\TransactionToFinish.cs" />
-    <Compile Include="Operations\PaymentState\BankCard.cs" />
-    <Compile Include="Operations\PaymentState\BarionUser.cs" />
-    <Compile Include="Operations\PaymentState\BarionUsername.cs" />
-    <Compile Include="Operations\PaymentState\FundingInformation.cs" />
-    <Compile Include="Operations\PaymentState\GetPaymentStateOperation.cs" />
-    <Compile Include="Operations\PaymentState\GetPaymentStateOperationResult.cs" />
-    <Compile Include="Operations\PaymentState\TransactionDetail.cs" />
-    <Compile Include="Operations\Refund\RefundedTransaction.cs" />
-    <Compile Include="Operations\Refund\RefundOperation.cs" />
-    <Compile Include="Operations\Refund\RefundOperationResult.cs" />
-    <Compile Include="Operations\Refund\TransactionToRefund.cs" />
-    <Compile Include="Operations\Common\Currency.cs" />
-    <Compile Include="Operations\Common\FundingSourceType.cs" />
-    <Compile Include="Operations\Common\Item.cs" />
-    <Compile Include="Operations\Common\PayeeTransaction.cs" />
-    <Compile Include="Operations\Common\PaymentStatus.cs" />
-    <Compile Include="Operations\StartPayment\PaymentTransaction.cs" />
-    <Compile Include="Operations\Common\PaymentTransactionResponse.cs" />
-    <Compile Include="Operations\Common\PaymentType.cs" />
-    <Compile Include="Operations\StartPayment\RecurrenceResult.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Operations\StartPayment\StartPaymentOperation.cs" />
-    <Compile Include="Operations\StartPayment\StartPaymentOperationResult.cs" />
-    <Compile Include="RetryPolicies\LinearRetry.cs" />
-    <Compile Include="RetryPolicies\NoRetry.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BarionClientLibrary.nuspec" />
-    <None Include="BarionClientLibrary.project.json" />
-    <None Include="BarionClientLibrary.ruleset" />
-    <None Include="BarionClientSignKey.snk" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -69,9 +69,9 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         }
 
         [Theory]
-        [InlineData(SocketError.ConnectionRefused, true)]
-        [InlineData(SocketError.TimedOut, true)]
-        [InlineData(SocketError.AccessDenied, false)]
+        [InlineData((int)SocketError.ConnectionRefused, true)]
+        [InlineData((int)SocketError.TimedOut, true)]
+        [InlineData((int)SocketError.AccessDenied, false)]
         public void ShouldRetry_ShouldReturn_OnSocketException(int errorCode, bool expectedResult)
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
@@ -81,9 +81,9 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         }
 
         [Theory]
-        [InlineData(SocketError.ConnectionRefused, true)]
-        [InlineData(SocketError.TimedOut, true)]
-        [InlineData(SocketError.AccessDenied, false)]
+        [InlineData((int)SocketError.ConnectionRefused, true)]
+        [InlineData((int)SocketError.TimedOut, true)]
+        [InlineData((int)SocketError.AccessDenied, false)]
         public void ShouldRetry_ShouldReturn_OnSocketException_InHttpRequestException(int errorCode, bool expectedResult)
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);

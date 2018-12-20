@@ -1,5 +1,10 @@
 # Release Notes
 
+## v2.0
+
+- Updated project to .NET Standard 2.0
+- Fixed SSL issue with .NET 4.5
+
 ## v1.4
 
 - Updated payment states

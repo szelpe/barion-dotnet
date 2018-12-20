@@ -6,6 +6,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -44,8 +45,12 @@ namespace BarionClientLibrary
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
-            _httpClient = httpClient;
+#if NET45
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+#endif
 
+            _httpClient = httpClient;
+            
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 

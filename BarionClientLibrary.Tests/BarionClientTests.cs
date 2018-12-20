@@ -201,7 +201,7 @@ namespace BarionClientLibrary.Tests
 
             var result = await _barionClient.ExecuteAsync(operation);
 
-            Assert.Equal(_httpMessageHandler.HttpRequestMessage.RequestUri.ToString(), "https://api.barion.com/payment/start");
+            Assert.Equal("https://api.barion.com/payment/start", _httpMessageHandler.HttpRequestMessage.RequestUri.ToString());
         }
 
         [Fact]
