@@ -12,11 +12,11 @@ namespace BarionClientLibrary.Tests
 {
     public class BarionClientTests
     {
-        private BarionClient _barionClient;
-        private HttpClient _httpClient;
-        private TestHttpMessageHandler _httpMessageHandler;
+        private readonly BarionClient _barionClient;
+        private readonly HttpClient _httpClient;
+        private readonly TestHttpMessageHandler _httpMessageHandler;
         private BarionSettings _barionClientSettings;
-        private TestRetryPolicy _retryPolicy;
+        private readonly TestRetryPolicy _retryPolicy;
 
         public BarionClientTests()
         {
@@ -29,8 +29,10 @@ namespace BarionClientLibrary.Tests
                 BaseUrl = new Uri("https://api.barion.com"),
                 POSKey = Guid.NewGuid()
             };
-            _barionClient = new BarionClient(_barionClientSettings, _httpClient);
-            _barionClient.RetryPolicy = _retryPolicy;
+            _barionClient = new BarionClient(_barionClientSettings, _httpClient)
+            {
+                RetryPolicy = _retryPolicy
+            };
         }
 
         [Fact]

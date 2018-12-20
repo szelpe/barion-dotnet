@@ -25,8 +25,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry();
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedRetryResult, retry.ShouldRetry(0, httpStatusCode, out retryInterval));
+            Assert.Equal(expectedRetryResult, retry.ShouldRetry(0, httpStatusCode, out _));
         }
 
         [Theory]
@@ -38,8 +37,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out _));
         }
 
         [Theory]
@@ -51,8 +49,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(0, new WebException("", status), out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(0, new WebException("", status), out _));
         }
 
         [Theory]
@@ -64,8 +61,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(0, new HttpRequestException("", new WebException("", status)), out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(0, new HttpRequestException("", new WebException("", status)), out _));
         }
 
         [Theory]
@@ -76,8 +72,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(0, new SocketException(errorCode), out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(0, new SocketException(errorCode), out _));
         }
 
         [Theory]
@@ -88,8 +83,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(0, new HttpRequestException("", new SocketException(errorCode)), out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(0, new HttpRequestException("", new SocketException(errorCode)), out _));
         }
 
         [Fact]
@@ -97,8 +91,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(true, retry.ShouldRetry(0, new TimeoutException(), out retryInterval));
+            Assert.True(retry.ShouldRetry(0, new TimeoutException(), out _));
         }
 
         [Fact]
@@ -106,8 +99,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(true, retry.ShouldRetry(0, new IOException(), out retryInterval));
+            Assert.True(retry.ShouldRetry(0, new IOException(), out _));
         }
 
         [Fact]
@@ -115,8 +107,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(false, retry.ShouldRetry(0, new JsonSerializationException(), out retryInterval));
+            Assert.False(retry.ShouldRetry(0, new JsonSerializationException(), out _));
         }
 
         [Theory]
@@ -127,8 +118,8 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new ExponentialRetry(TimeSpan.FromSeconds(4), 3);
 
-            TimeSpan retryInterval;
-            retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval);
+            retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out var retryInterval);
+
             Assert.InRange(retryInterval.TotalSeconds, min, max);
         }
 
