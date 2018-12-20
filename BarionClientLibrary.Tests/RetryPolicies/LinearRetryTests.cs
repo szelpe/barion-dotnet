@@ -21,8 +21,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new LinearRetry();
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedRetryResult, retry.ShouldRetry(0, httpStatusCode, out retryInterval));
+            Assert.Equal(expectedRetryResult, retry.ShouldRetry(0, httpStatusCode, out _));
         }
 
         [Theory]
@@ -34,8 +33,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new LinearRetry(default(TimeSpan), 3);
 
-            TimeSpan retryInterval;
-            Assert.Equal(expectedResult, retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval));
+            Assert.Equal(expectedResult, retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out _));
         }
 
         [Theory]
@@ -46,8 +44,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         {
             var retry = new LinearRetry(TimeSpan.FromSeconds(4), 3);
 
-            TimeSpan retryInterval;
-            retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out retryInterval);
+            retry.ShouldRetry(currentRetryCount, HttpStatusCode.RequestTimeout, out var retryInterval);
 
             Assert.Equal(expectedRetryInterval, retryInterval.Seconds);
         }

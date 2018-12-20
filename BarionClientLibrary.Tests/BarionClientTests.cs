@@ -312,7 +312,7 @@ namespace BarionClientLibrary.Tests
         }
 
         [Fact]
-        public void ExecuteAsync_ShouldNotAllowNumberAsAnEnum()
+        public async Task ExecuteAsync_ShouldNotAllowNumberAsAnEnum()
         {
             var operation = PrepareValidOperation();
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
@@ -320,18 +320,18 @@ namespace BarionClientLibrary.Tests
                 ""EnumProperty"": 12,
             }");
 
-            Assert.ThrowsAsync<JsonSerializationException>(async () => await _barionClient.ExecuteAsync<TestOperationResult>(operation));
+            await Assert.ThrowsAsync<JsonSerializationException>(async () => await _barionClient.ExecuteAsync<TestOperationResult>(operation));
         }
 
         [Fact]
-        public void BarionClient_ShouldThrowException_IfAlreadyDisposed()
+        public async Task BarionClient_ShouldThrowException_IfAlreadyDisposed()
         {
             var operation = PrepareValidOperation();
             _httpMessageHandler.HttpResponseMessage = PrepareValidResponse();
 
             _barionClient.Dispose();
 
-            Assert.ThrowsAsync<ObjectDisposedException>(async () => await _barionClient.ExecuteAsync(operation));
+            await Assert.ThrowsAsync<ObjectDisposedException>(async () => await _barionClient.ExecuteAsync(operation));
         }
 
         [Fact]
