@@ -4,6 +4,7 @@
     {
         HUF,
         EUR,
-        USD
+        USD,
+        CZK
     }
 }
