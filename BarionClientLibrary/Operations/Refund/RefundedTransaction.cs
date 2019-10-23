@@ -6,8 +6,8 @@ namespace BarionClientLibrary.Operations.Refund
     {
         public Guid TransactionId { get; set; }
         public decimal Total { get; set; }
-        public string POSTransactionId { get; set; }
-        public string Comment { get; set; }
-        public string Status { get; set; }
+        public string? POSTransactionId { get; set; }
+        public string? Comment { get; set; }
+        public string? Status { get; set; }
     }
 }

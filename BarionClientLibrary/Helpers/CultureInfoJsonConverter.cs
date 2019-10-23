@@ -12,7 +12,7 @@ namespace BarionClientLibrary.Helpers
             return typeof(CultureInfo).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null)
             {
@@ -41,16 +41,20 @@ namespace BarionClientLibrary.Helpers
                 return;
             }
 
-            var cultureInfo = value as CultureInfo;
-
-            writer.WriteValue(cultureInfo.Name);
+            if (value is CultureInfo cultureInfo)
+            {
+                writer.WriteValue(cultureInfo.Name);
+            }
         }
 
         private static string FormatErrorMessage(JsonReader reader, string message)
         {
-            var lineInfo = reader as IJsonLineInfo;
+            if (reader is IJsonLineInfo lineInfo)
+            {
+                return $"{message} Path '{reader.Path}', line {lineInfo.LineNumber}, position {lineInfo.LinePosition}.";
+            }
 
-            return $"{message} Path '{reader.Path}', line {lineInfo.LineNumber}, position {lineInfo.LinePosition}.";
+            return $"{message} Path '{reader.Path}'.";
         }
     }
 }

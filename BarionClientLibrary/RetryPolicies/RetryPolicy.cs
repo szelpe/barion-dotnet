@@ -91,9 +91,9 @@ namespace BarionClientLibrary.RetryPolicies
             var httpRequestException = ex as HttpRequestException;
             WebException webException;
             if (httpRequestException != null)
-                webException = httpRequestException.InnerException as WebException;
+                webException = (WebException)httpRequestException.InnerException;
             else
-                webException = ex as WebException;
+                webException = (WebException)ex;
 
             if (webException != null)
             {
@@ -105,9 +105,9 @@ namespace BarionClientLibrary.RetryPolicies
 
             SocketException socketException;
             if (httpRequestException != null)
-                socketException = httpRequestException.InnerException as SocketException;
+                socketException = (SocketException)httpRequestException.InnerException;
             else
-                socketException = ex as SocketException;
+                socketException = (SocketException)ex;
 
             if (socketException != null)
             {

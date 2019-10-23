@@ -13,10 +13,9 @@ namespace BarionClientLibrary.IntegrationTests
 
         public PaymentTests()
         {
-            _settings = new BarionSettings
+            _settings = new BarionSettings(Guid.Parse(AppSettings.BarionPOSKey))
             {
                 BaseUrl = new Uri(AppSettings.BarionBaseAddress),
-                POSKey = Guid.Parse(AppSettings.BarionPOSKey),
                 Payee = AppSettings.BarionPayee
             };
         }

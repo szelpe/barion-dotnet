@@ -20,6 +20,12 @@ namespace BarionClientLibrary
         /// <summary>
         /// The email address of the Barion user who will receive the payments.
         /// </summary>
-        public string Payee { get; set; }
+        public string? Payee { get; set; }
+
+        public BarionSettings(Guid posKey, Uri? baseUrl = null)
+        {
+            POSKey = posKey;
+            BaseUrl = baseUrl ?? new Uri("https://api.barion.com/");
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace BarionClientLibrary
     public class BarionClient : IDisposable
     {
         private HttpClient _httpClient;
-        private BarionSettings _settings;
+        private readonly BarionSettings _settings;
         private IRetryPolicy _retryPolicy;
         private TimeSpan _timeout;
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(120);
@@ -42,15 +42,13 @@ namespace BarionClientLibrary
         /// <param name="httpClient">HttpClient instance to use for sending HTTP requests.</param>
         public BarionClient(BarionSettings settings, HttpClient httpClient)
         {
-            if (httpClient == null)
-                throw new ArgumentNullException(nameof(httpClient));
 
 #if NET45
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
 
-            _httpClient = httpClient;
-            
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
@@ -78,10 +76,7 @@ namespace BarionClientLibrary
             }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
-
-                _retryPolicy = value;
+                _retryPolicy = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -117,7 +112,12 @@ namespace BarionClientLibrary
             if (typeof(TResult) != operation.ResultType)
                 throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
 
-            return await ExecuteAsync(operation) as TResult;
+            if (await ExecuteAsync(operation) is TResult result)
+            {
+                return result;
+            }
+
+            throw new InvalidOperationException("TResult must match the BarionOperation");
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace BarionClientLibrary
         /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
         public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation)
         {
-            return await ExecuteAsync(operation, default(CancellationToken));
+            return await ExecuteAsync(operation, default);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace BarionClientLibrary
             var shouldRetry = false;
             uint currentRetryCount = 0;
             TimeSpan retryInterval = TimeSpan.Zero;
-            BarionOperationResult result = null;
+            BarionOperationResult? result = null;
 
             do
             {
@@ -199,6 +199,11 @@ namespace BarionClientLibrary
                     currentRetryCount++;
                 }
             } while (shouldRetry && !linkedCts.IsCancellationRequested);
+
+            if (result == null)
+            {
+                result = CreateFailedOperationResult(operation.ResultType, "Failed to get response");
+            }
 
             return result;
         }
@@ -269,15 +274,14 @@ namespace BarionClientLibrary
                 throw new ArgumentNullException(nameof(operation.Method));
         }
 
-        private BarionOperationResult CreateFailedOperationResult(Type resultType, string errorCode, string title = null, string description = null)
+        private BarionOperationResult CreateFailedOperationResult(Type resultType, string errorCode, string? title = null, string? description = null)
         {
             var result = Activator.CreateInstance(resultType) as BarionOperationResult;
             result.IsOperationSuccessful = false;
-            result.Errors = new[] 
+            result.Errors = new[]
             {
-                new Error
+                new Error(errorCode)
                 {
-                    ErrorCode = errorCode,
                     Title = title,
                     Description = description
                 }
@@ -317,7 +321,6 @@ namespace BarionClientLibrary
                 if (_httpClient != null)
                 {
                     _httpClient.Dispose();
-                    _httpClient = null;
                 }
             }
         }

@@ -24,10 +24,9 @@ namespace BarionClientLibrary.Tests
             _httpClient = new HttpClient(_httpMessageHandler);
             _retryPolicy = new TestRetryPolicy();
 
-            _barionClientSettings = new BarionSettings
+            _barionClientSettings = new BarionSettings(Guid.NewGuid())
             {
-                BaseUrl = new Uri("https://api.barion.com"),
-                POSKey = Guid.NewGuid()
+                BaseUrl = new Uri("https://api.barion.com")
             };
             _barionClient = new BarionClient(_barionClientSettings, _httpClient)
             {
@@ -337,10 +336,9 @@ namespace BarionClientLibrary.Tests
         [Fact]
         public void BarionClient_ShouldThrowException_IfBaseUrl_IsRelative()
         {
-            _barionClientSettings = new BarionSettings
+            _barionClientSettings = new BarionSettings(Guid.Empty)
             {
-                BaseUrl = new Uri("/index.html", UriKind.Relative),
-                POSKey = Guid.Empty
+                BaseUrl = new Uri("/index.html", UriKind.Relative)
             };
 
             Assert.Throws<ArgumentException>(() => new BarionClient(_barionClientSettings));
@@ -355,10 +353,7 @@ namespace BarionClientLibrary.Tests
         [Fact]
         public void BarionClient_ShouldThrowException_IfBaseUrl_IsNull()
         {
-            _barionClientSettings = new BarionSettings
-            {
-                POSKey = Guid.Empty
-            };
+            _barionClientSettings = new BarionSettings(Guid.Empty);
 
             Assert.Throws<ArgumentNullException>(() => new BarionClient(_barionClientSettings));
         }
@@ -366,10 +361,9 @@ namespace BarionClientLibrary.Tests
         [Fact]
         public void BarionClient_ShouldThrowException_IfHttpClient_IsNull()
         {
-            _barionClientSettings = new BarionSettings
+            _barionClientSettings = new BarionSettings(Guid.Empty)
             {
-                BaseUrl = new Uri("https://api.barion.com"),
-                POSKey = Guid.Empty
+                BaseUrl = new Uri("https://api.barion.com")
             };
 
             Assert.Throws<ArgumentNullException>(() => new BarionClient(_barionClientSettings, null));

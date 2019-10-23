@@ -13,10 +13,9 @@ namespace BarionClientTester
     {
         public static void Run()
         {
-            var settings = new BarionSettings
+            var settings = new BarionSettings(Guid.Parse(AppSettings.BarionPOSKey))
             {
                 BaseUrl = new Uri(AppSettings.BarionBaseAddress),
-                POSKey = Guid.Parse(AppSettings.BarionPOSKey),
                 Payee = AppSettings.BarionPayee
             };
 

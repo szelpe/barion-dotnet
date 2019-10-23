@@ -4,7 +4,7 @@ namespace BarionClientLibrary.Operations.Common
 {
     public class PayerAccountInformation
     {
-        public string AccountId { get; set; }
+        public string? AccountId { get; set; }
         public DateTime? AccountCreated { get; set; }
         public AccountCreationIndicator? AccountCreationIndicator { get; set; }
         public DateTime? AccountLastChanged { get; set; }

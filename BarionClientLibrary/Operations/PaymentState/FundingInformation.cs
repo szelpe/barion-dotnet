@@ -2,7 +2,7 @@
 {
     public class FundingInformation
     {
-        public BankCard BankCard { get; set; }
-        public string AuthorizationCode { get; set; }
+        public BankCard? BankCard { get; set; }
+        public string? AuthorizationCode { get; set; }
     }
 }
