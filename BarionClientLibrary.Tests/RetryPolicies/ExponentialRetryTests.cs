@@ -97,7 +97,7 @@ namespace BarionClientLibrary.Tests.RetryPolicies
         [Fact]
         public void ShouldRetry_ShouldReturn_OnIOException()
         {
-            var retry = new ExponentialRetry(default(TimeSpan), 3);
+            var retry = new ExponentialRetry(default, 3);
 
             Assert.True(retry.ShouldRetry(0, new IOException(), out _));
         }

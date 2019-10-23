@@ -89,11 +89,11 @@ namespace BarionClientLibrary.RetryPolicies
         private bool IsTransient(Exception ex)
         {
             var httpRequestException = ex as HttpRequestException;
-            WebException webException;
+            WebException? webException;
             if (httpRequestException != null)
-                webException = (WebException)httpRequestException.InnerException;
+                webException = httpRequestException.InnerException as WebException;
             else
-                webException = (WebException)ex;
+                webException = ex as WebException;
 
             if (webException != null)
             {
@@ -103,11 +103,11 @@ namespace BarionClientLibrary.RetryPolicies
                 return false;
             }
 
-            SocketException socketException;
+            SocketException? socketException;
             if (httpRequestException != null)
-                socketException = (SocketException)httpRequestException.InnerException;
+                socketException = httpRequestException.InnerException as SocketException;
             else
-                socketException = (SocketException)ex;
+                socketException = ex as SocketException;
 
             if (socketException != null)
             {

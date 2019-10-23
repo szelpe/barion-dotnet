@@ -351,14 +351,6 @@ namespace BarionClientLibrary.Tests
         }
 
         [Fact]
-        public void BarionClient_ShouldThrowException_IfBaseUrl_IsNull()
-        {
-            _barionClientSettings = new BarionSettings(Guid.Empty);
-
-            Assert.Throws<ArgumentNullException>(() => new BarionClient(_barionClientSettings));
-        }
-
-        [Fact]
         public void BarionClient_ShouldThrowException_IfHttpClient_IsNull()
         {
             _barionClientSettings = new BarionSettings(Guid.Empty)
