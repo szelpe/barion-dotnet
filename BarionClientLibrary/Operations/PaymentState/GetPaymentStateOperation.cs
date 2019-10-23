@@ -9,7 +9,7 @@ namespace BarionClientLibrary.Operations.PaymentState
     /// <remarks>
     /// View the full documentation of the operation here: https://doksi.barion.com/Payment-GetPaymentState-v2
     /// </remarks>
-    public class GetPaymentStateOperation : BarionOperation
+    public class GetPaymentStateOperation : BarionOperation<GetPaymentStateOperationResult>
     {
         public Guid PaymentId { get; set; }
 

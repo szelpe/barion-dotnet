@@ -9,7 +9,7 @@ namespace BarionClientLibrary.Operations.FinishReservation
     /// <remarks>
     /// View the full documentation of the operation here: https://doksi.barion.com/Payment-FinishReservation-v2
     /// </remarks>
-    public class FinishReservationOperation : BarionOperation
+    public class FinishReservationOperation : BarionOperation<FinishReservationOperationResult>
     {
         public Guid PaymentId { get; set; }
         public TransactionToFinish[] Transactions { get; set; }

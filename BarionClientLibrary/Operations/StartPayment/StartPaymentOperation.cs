@@ -11,7 +11,7 @@ namespace BarionClientLibrary.Operations.StartPayment
     /// <remarks>
     /// View the full documentation of the operation here: https://docs.barion.com/Payment-Start-v2-3DS
     /// </remarks>
-    public class StartPaymentOperation : BarionOperation
+    public class StartPaymentOperation : BarionOperation<StartPaymentOperationResult>
     {
         public PaymentType PaymentType { get; set; }
         public TimeSpan? ReservationPeriod { get; set; }

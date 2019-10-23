@@ -106,13 +106,13 @@ namespace BarionClientLibrary
         /// <typeparam name="TResult">The type of the result of the Barion operation.</typeparam>
         /// <param name="operation">The Barion operation to execute.</param>
         /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
-        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation)
-            where TResult : BarionOperationResult
+        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation<TResult> operation)
+            where TResult : BarionOperationResult, new()
         {
             if (typeof(TResult) != operation.ResultType)
                 throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
 
-            if (await ExecuteAsync(operation) is TResult result)
+            if (await ExecuteAsync(operation, default) is TResult result)
             {
                 return result;
             }
@@ -123,37 +123,16 @@ namespace BarionClientLibrary
         /// <summary>
         /// Executes a Barion operation.
         /// </summary>
-        /// <param name="operation">The Barion operation to execute.</param>
-        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
-        public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation)
-        {
-            return await ExecuteAsync(operation, default);
-        }
-
-        /// <summary>
-        /// Executes a Barion operation.
-        /// </summary>
         /// <typeparam name="TResult">The type of the result of the Barion operation.</typeparam>
         /// <param name="operation">The Barion operation to execute.</param>
         /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
         /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
-        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation operation, CancellationToken cancellationToken)
-            where TResult : BarionOperationResult
+        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation<TResult> operation, CancellationToken cancellationToken)
+            where TResult : BarionOperationResult, new()
         {
             if (typeof(TResult) != operation.ResultType)
                 throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
 
-            return await ExecuteAsync(operation, cancellationToken) as TResult;
-        }
-
-        /// <summary>
-        /// Executes a Barion operation.
-        /// </summary>
-        /// <param name="operation">The Barion operation to execute.</param>
-        /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
-        /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
-        public async Task<BarionOperationResult> ExecuteAsync(BarionOperation operation, CancellationToken cancellationToken)
-        {
             CheckDisposed();
             ValidateOperation(operation);
 
@@ -162,7 +141,8 @@ namespace BarionClientLibrary
             return await SendWithRetry(operation, cancellationToken);
         }
 
-        private async Task<BarionOperationResult> SendWithRetry(BarionOperation operation, CancellationToken cancellationToken)
+        private async Task<TResult> SendWithRetry<TResult>(BarionOperation<TResult> operation, CancellationToken cancellationToken)
+            where TResult : BarionOperationResult, new()
         {
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             SetTimeout(linkedCts);
@@ -170,7 +150,7 @@ namespace BarionClientLibrary
             var shouldRetry = false;
             uint currentRetryCount = 0;
             TimeSpan retryInterval = TimeSpan.Zero;
-            BarionOperationResult? result = null;
+            TResult? result = null;
 
             do
             {
@@ -202,13 +182,14 @@ namespace BarionClientLibrary
 
             if (result == null)
             {
-                result = CreateFailedOperationResult(operation.ResultType, "Failed to get response");
+                result = CreateFailedOperationResult<TResult>("Failed to get response");
             }
 
             return result;
         }
 
-        private HttpRequestMessage PrepareHttpRequestMessage(BarionOperation operation)
+        private HttpRequestMessage PrepareHttpRequestMessage<TResult>(BarionOperation<TResult> operation)
+            where TResult : BarionOperationResult, new()
         {
             var message = new HttpRequestMessage(operation.Method, new Uri(_settings.BaseUrl, operation.RelativeUri));
 
@@ -225,20 +206,21 @@ namespace BarionClientLibrary
             return message;
         }
 
-        private async Task<BarionOperationResult> CreateResultFromResponseMessage(HttpResponseMessage responseMessage, BarionOperation operation)
+        private async Task<TResult> CreateResultFromResponseMessage<TResult>(HttpResponseMessage responseMessage, BarionOperation<TResult> operation)
+            where TResult : BarionOperationResult, new()
         {
             var response = await responseMessage.Content.ReadAsStringAsync();
 
-            var operationResult = (BarionOperationResult)JsonConvert.DeserializeObject(response, operation.ResultType, new JsonSerializerSettings
+            var operationResult = JsonConvert.DeserializeObject<TResult>(response, new JsonSerializerSettings
             {
                 Converters = new List<JsonConverter> { new StringEnumConverter { AllowIntegerValues = false }, new CultureInfoJsonConverter() }
             });
 
             if (operationResult == null)
-                return CreateFailedOperationResult(operation.ResultType, "Deserialized result was null");
+                return CreateFailedOperationResult<TResult>("Deserialized result was null");
 
             if (!responseMessage.IsSuccessStatusCode && operationResult.Errors == null)
-                return CreateFailedOperationResult(operation.ResultType, responseMessage.StatusCode.ToString(), responseMessage.ReasonPhrase, response);
+                return CreateFailedOperationResult<TResult>(responseMessage.StatusCode.ToString(), responseMessage.ReasonPhrase, response);
 
             operationResult.IsOperationSuccessful = responseMessage.IsSuccessStatusCode && (operationResult.Errors == null || !operationResult.Errors.Any());
 
@@ -253,7 +235,8 @@ namespace BarionClientLibrary
             }
         }
 
-        private void ValidateOperation(BarionOperation operation)
+        private void ValidateOperation<TResult>(BarionOperation<TResult> operation)
+            where TResult : BarionOperationResult, new()
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
@@ -274,16 +257,19 @@ namespace BarionClientLibrary
                 throw new ArgumentNullException(nameof(operation.Method));
         }
 
-        private BarionOperationResult CreateFailedOperationResult(Type resultType, string errorCode, string? title = null, string? description = null)
+        private TResult CreateFailedOperationResult<TResult>(string errorCode, string? title = null, string? description = null)
+            where TResult : BarionOperationResult, new()
         {
-            var result = Activator.CreateInstance(resultType) as BarionOperationResult;
-            result.IsOperationSuccessful = false;
-            result.Errors = new[]
+            var result = new TResult
             {
-                new Error(errorCode)
+                IsOperationSuccessful = false,
+                Errors = new[]
                 {
-                    Title = title,
-                    Description = description
+                    new Error(errorCode)
+                    {
+                        Title = title,
+                        Description = description
+                    }
                 }
             };
 

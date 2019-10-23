@@ -53,7 +53,7 @@ using(var barionClient = new BarionClient(barionSettings))
 
 	// add payment parameters to startPayment
 
-	var result = await barionClient.ExecuteAsync<StartPaymentOperationResult>(startPayment);
+	var result = await barionClient.ExecuteAsync(startPayment);
 
 	if(result.IsOperationSuccessful)
 	{
@@ -120,7 +120,7 @@ barionClient.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
 You can easily add your own operations by creating a new subclass of `BarionOperation`. E.g. if you want to support the [Reject](https://doksi.barion.com/Payment-Reject-v2) payment operation you need to create a new class:
 
 ``` csharp
-public class RejectOperation : BarionOperation
+public class RejectOperation : BarionOperation<RejectOperationResult>
 {
     public override HttpMethod Method => HttpMethod.Post;
     public override Uri RelativeUri => new Uri("/v2/Payment/Reject", UriKind.Relative);

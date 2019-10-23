@@ -7,7 +7,8 @@ namespace BarionClientLibrary.Operations
     /// <summary>
     /// Defines a base class for Barion operations.
     /// </summary>
-    public abstract class BarionOperation
+    public abstract class BarionOperation<TResult>
+        where TResult: BarionOperationResult
     {
         /// <summary>
         /// The HTTP method of the operation.

@@ -9,7 +9,7 @@ namespace BarionClientLibrary.Operations.Refund
     /// <remarks>
     /// View the full documentation of the operation here: https://doksi.barion.com/Payment-Refund-v2
     /// </remarks>
-    public class RefundOperation : BarionOperation
+    public class RefundOperation : BarionOperation<RefundOperationResult>
     {
         public Guid PaymentId { get; set; }
         public TransactionToRefund[] TransactionsToRefund { get; set; }

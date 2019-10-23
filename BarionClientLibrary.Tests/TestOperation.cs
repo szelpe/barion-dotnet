@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace BarionClientLibrary.Tests
 {
-    internal class TestOperation : BarionOperation
+    internal class TestOperation : BarionOperation<TestOperationResult>
     {
         public override HttpMethod Method => MethodReturns;
 
