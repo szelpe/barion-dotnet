@@ -1,5 +1,6 @@
 ﻿using BarionClientLibrary.Operations.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BarionClientLibrary.Operations.FinishReservation
 {
@@ -12,6 +13,11 @@ namespace BarionClientLibrary.Operations.FinishReservation
         public Guid PaymentId { get; set; }
         public string? PaymentRequestId { get; set; }
         public PaymentStatus Status { get; set; }
-        public PaymentTransactionResponse[] Transactions { get; set; }
+        public IReadOnlyList<PaymentTransactionResponse> Transactions { get; set; }
+
+        public FinishReservationOperationResult()
+        {
+            Transactions = new List<PaymentTransactionResponse>();
+        }
     }
 }

@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using BarionClientLibrary.Helpers;
 
 namespace BarionClientLibrary
@@ -46,7 +45,6 @@ namespace BarionClientLibrary
 #if NET45
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
-
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             if (settings == null)
@@ -286,11 +284,8 @@ namespace BarionClientLibrary
             if (disposing && !_disposed)
             {
                 _disposed = true;
-
-                if (_httpClient != null)
-                {
-                    _httpClient.Dispose();
-                }
+                _httpClient?.Dispose();
+                _httpClient = null!;
             }
         }
 
