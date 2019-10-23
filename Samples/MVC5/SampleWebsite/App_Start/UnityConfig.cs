@@ -44,6 +44,9 @@ namespace SampleWebsite.App_Start
 
             container.RegisterInstance(barionSettings);
             container.RegisterType<BarionClient>();
+			
+			// This is not the best way to use HttpClient, use the HttpClient factory pattern instead
+			//     See: https://www.nuget.org/packages/Microsoft.Extensions.Http
             container.RegisterType<HttpClient>(new InjectionFactory(c => new HttpClient()));
         }
     }

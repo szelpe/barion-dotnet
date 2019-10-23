@@ -13,7 +13,7 @@ The Barion .NET library makes it easy to add Barion payment to your .NET applica
 
 ## Prerequisites
 
-- .NET 4.5 or .NET Standard 1.3 and above
+- .NET Standard 2.0 or .NET 4.5 and above
 - Newtonsoft.Json
 
 ## Release Notes
@@ -61,6 +61,27 @@ using(var barionClient = new BarionClient(barionSettings))
 	}
 }
 ```
+
+#### Registering as a service in ASP.NET Core
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+	var barionSettings = new BarionSettings
+	{
+		BaseUrl = new Uri("https://api.test.barion.com/"),
+		POSKey = Guid.Parse("d1bcff3989885d3a98235c1cd768eba2"),
+		Payee = "test@example.com",
+	};
+
+	services.AddSingleton(barionSettings);
+	services.AddTransient<BarionClient>();
+	services.AddHttpClient<BarionClient>();
+	// ...
+}
+```
+
+The lifetime of the service is controlled by the framework this way so you don't have to manually dispose the object (i.e. you don't have to use the `using` statement).
 
 ## Sample website
 
