@@ -28,16 +28,16 @@ namespace BarionClientTester
                     PaymentRequestId = "P1",
                     OrderNumber = "1_0",
                     Currency = Currency.HUF,
-                    CallbackUrl = "http://index.hu",
+                    CallbackUrl = "http://example.com",
                     Locale = CultureInfo.CurrentCulture,
-                    RedirectUrl = "http://index.hu"
+                    RedirectUrl = "http://example.com"
                 };
 
                 var transaction = new PaymentTransaction
                 {
                     Payee = settings.Payee,
                     POSTransactionId = "T1",
-                    Total = new decimal(1000),
+                    Total = new decimal(100),
                     Comment = "comment"
                 };
 
@@ -45,10 +45,10 @@ namespace BarionClientTester
                 {
                     Name = "Test",
                     Description = "Test",
-                    ItemTotal = new decimal(1000),
+                    ItemTotal = new decimal(100),
                     Quantity = 1,
                     Unit = "piece",
-                    UnitPrice = new decimal(1000),
+                    UnitPrice = new decimal(100),
                     SKU = "SKU"
                 };
 

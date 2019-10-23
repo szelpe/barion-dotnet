@@ -3,15 +3,15 @@ var page = require('webpage').create();
 
 page.open(system.args[1], function (status) {
     page.evaluate(function (loginName, password) {
-        $('#openPayWithBarion').click();
+        $('[data-target="#PaymentMethodBarion"]').click();
         $('#LoginName').val(loginName);
         $('#Password').val(password);
-        $('#loginBtn').click();
+        $('button[type="submit"]').click();
     }, system.args[2], system.args[3]);
 
     setTimeout(function () {
         page.evaluate(function () {
-            $('#payWithBarion').click();
+            $('button[type="submit"]').click();
         });
 
         setTimeout(function () {
