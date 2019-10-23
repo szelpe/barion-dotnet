@@ -21,13 +21,7 @@ namespace BarionClientLibrary.Operations
         /// </summary>
         [JsonIgnore]
         public abstract Uri RelativeUri { get; }
-
-        /// <summary>
-        /// The type of the result of the operation.
-        /// </summary>
-        [JsonIgnore]
-        public abstract Type ResultType { get; }
-
+        
         /// <summary>
         /// The private key of the shop.
         /// </summary>

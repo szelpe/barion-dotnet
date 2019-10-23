@@ -18,8 +18,6 @@ namespace BarionClientLibrary.Tests
         [JsonIgnore]
         public Uri RelativeUriReturns { get; set; }
 
-        public override Type ResultType => ResultTypeReturns;
-
         [JsonIgnore]
         public Type ResultTypeReturns { get; set; }
 

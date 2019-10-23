@@ -41,7 +41,6 @@ namespace BarionClientLibrary.Operations.StartPayment
 
         public override Uri RelativeUri => new Uri("/v2/Payment/Start", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
-        public override Type ResultType => typeof(StartPaymentOperationResult);
 
         public StartPaymentOperation()
         {

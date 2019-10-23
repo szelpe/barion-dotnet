@@ -16,6 +16,5 @@ namespace BarionClientLibrary.Operations.FinishReservation
 
         public override HttpMethod Method => HttpMethod.Post;
         public override Uri RelativeUri => new Uri("/v2/Payment/FinishReservation", UriKind.Relative);
-        public override Type ResultType => typeof(FinishReservationOperationResult);
     }
 }

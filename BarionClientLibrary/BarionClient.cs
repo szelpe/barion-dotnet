@@ -106,18 +106,10 @@ namespace BarionClientLibrary
         /// <typeparam name="TResult">The type of the result of the Barion operation.</typeparam>
         /// <param name="operation">The Barion operation to execute.</param>
         /// <returns>Returns System.Threading.Tasks.Task`1.The task object representing the asynchronous operation.</returns>
-        public async Task<TResult> ExecuteAsync<TResult>(BarionOperation<TResult> operation)
+        public Task<TResult> ExecuteAsync<TResult>(BarionOperation<TResult> operation)
             where TResult : BarionOperationResult, new()
         {
-            if (typeof(TResult) != operation.ResultType)
-                throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
-
-            if (await ExecuteAsync(operation, default) is TResult result)
-            {
-                return result;
-            }
-
-            throw new InvalidOperationException("TResult must match the BarionOperation");
+            return ExecuteAsync(operation, default);
         }
 
         /// <summary>
@@ -130,9 +122,6 @@ namespace BarionClientLibrary
         public async Task<TResult> ExecuteAsync<TResult>(BarionOperation<TResult> operation, CancellationToken cancellationToken)
             where TResult : BarionOperationResult, new()
         {
-            if (typeof(TResult) != operation.ResultType)
-                throw new InvalidOperationException("TResult should be equal to the ResultType of the operation.");
-
             CheckDisposed();
             ValidateOperation(operation);
 
@@ -246,12 +235,6 @@ namespace BarionClientLibrary
 
             if (operation.RelativeUri.IsAbsoluteUri)
                 throw new ArgumentException("operation.RelativeUri should be a relative Uri.", nameof(operation.RelativeUri));
-
-            if (operation.ResultType == null)
-                throw new ArgumentNullException(nameof(operation.ResultType));
-
-            if (!operation.ResultType.GetTypeInfo().IsSubclassOf(typeof(BarionOperationResult)))
-                throw new ArgumentException("ResultType should be a subclass of BarionOperationResult.", nameof(operation.ResultType));
 
             if (operation.Method == null)
                 throw new ArgumentNullException(nameof(operation.Method));

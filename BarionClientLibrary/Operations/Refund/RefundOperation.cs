@@ -16,6 +16,5 @@ namespace BarionClientLibrary.Operations.Refund
 
         public override Uri RelativeUri => new Uri("/v2/Payment/Refund", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
-        public override Type ResultType => typeof(RefundOperationResult);
     }
 }

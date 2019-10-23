@@ -124,7 +124,6 @@ public class RejectOperation : BarionOperation<RejectOperationResult>
 {
     public override HttpMethod Method => HttpMethod.Post;
     public override Uri RelativeUri => new Uri("/v2/Payment/Reject", UriKind.Relative);
-    public override Type ResultType => typeof(RejectOperationResult);
 
     public string UserName { get; set; }
     public string Password { get; set; }

@@ -15,6 +15,5 @@ namespace BarionClientLibrary.Operations.PaymentState
 
         public override Uri RelativeUri => new Uri($"/v2/Payment/GetPaymentState?PaymentId={PaymentId}&POSKey={POSKey}", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Get;
-        public override Type ResultType => typeof(GetPaymentStateOperationResult);
     }
 }
