@@ -18,6 +18,6 @@ namespace BarionClientLibrary.Operations.Capture
         
         public override Uri RelativeUri => new Uri("/v2/Payment/Capture", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
-        public override Type ResultType => typeof(StartPaymentOperationResult);
+        public override Type ResultType => typeof(CaptureOperationResult);
     }
 }

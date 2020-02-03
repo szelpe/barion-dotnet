@@ -30,10 +30,10 @@ namespace BarionClientTester
                     FundingSources = new[] { FundingSourceType.All },
                     PaymentRequestId = "P1",
                     OrderNumber = "1_0",
-                    Currency = Currency.HUF,
-                    CallbackUrl = "http://index.hu",
+                    Currency = Currency.EUR,
+                    CallbackUrl = "http://index.sk",
                     Locale = CultureInfo.CurrentCulture,
-                    RedirectUrl = "http://index.hu"
+                    RedirectUrl = "http://index.sk"
                 };
 
                 var transaction = new PaymentTransaction

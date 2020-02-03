@@ -114,7 +114,7 @@ namespace BarionClientTester
 
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("Sending FinishReservation...");
+        Console.WriteLine("Sending capture...");
 
         var result3 = barionClient.ExecuteAsync<CaptureOperationResult>(capturePayment).Result;
 
