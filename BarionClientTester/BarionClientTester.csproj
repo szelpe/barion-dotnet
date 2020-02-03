@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="CapturePayment.cs" />
     <Compile Include="FinishReservation.cs" />
     <Compile Include="Refund.cs" />
     <Compile Include="ReservationPayment.cs" />

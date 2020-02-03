@@ -59,7 +59,7 @@ namespace BarionClientLibrary.Tests
                     return false;
                 };
 
-            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
+            await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
             Assert.Equal(4, _httpMessageHandler.SendAsyncCallCount);
         }
@@ -80,7 +80,7 @@ namespace BarionClientLibrary.Tests
                     return false;
                 };
 
-            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation(), cts.Token);
+            await _barionClient.ExecuteAsync(new StartPaymentOperation(), cts.Token);
 
             Assert.Equal(1, _httpMessageHandler.SendAsyncCallCount);
         }
@@ -100,7 +100,7 @@ namespace BarionClientLibrary.Tests
                 };
 
             _barionClient.Timeout = TimeSpan.FromMilliseconds(50);
-            var result = await _barionClient.ExecuteAsync(new StartPaymentOperation());
+            await _barionClient.ExecuteAsync(new StartPaymentOperation());
 
             Assert.Equal(1, _httpMessageHandler.SendAsyncCallCount);
         }
@@ -134,7 +134,7 @@ namespace BarionClientLibrary.Tests
             var operation = PrepareValidOperation();
             operation.MethodReturns = httpMethod;
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Equal($"{{\r\n  \"POSKey\": \"{_barionClientSettings.POSKey}\"\r\n}}", _httpMessageHandler.HttpRequestBody);
         }
@@ -146,7 +146,7 @@ namespace BarionClientLibrary.Tests
             var operation = PrepareValidOperation();
             operation.MethodReturns = HttpMethod.Put;
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Equal("application/json", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.MediaType);
         }
@@ -158,7 +158,7 @@ namespace BarionClientLibrary.Tests
             var operation = PrepareValidOperation();
             operation.MethodReturns = HttpMethod.Post;
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Equal("utf-8", _httpMessageHandler.HttpRequestMessage.Content.Headers.ContentType.CharSet);
         }
@@ -174,7 +174,7 @@ namespace BarionClientLibrary.Tests
 
             operation.MethodReturns = HttpMethod.Post;
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Contains("\"Color\": \"Red\"", _httpMessageHandler.HttpRequestBody);
         }
@@ -187,7 +187,7 @@ namespace BarionClientLibrary.Tests
 
             operation.MethodReturns = HttpMethod.Get;
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Null(_httpMessageHandler.HttpRequestBody);
         }
@@ -201,7 +201,7 @@ namespace BarionClientLibrary.Tests
             _barionClientSettings.BaseUrl = new Uri("https://api.barion.com/");
             operation.RelativeUriReturns = new Uri("/payment/start", UriKind.Relative);
 
-            var result = await _barionClient.ExecuteAsync(operation);
+            await _barionClient.ExecuteAsync(operation);
 
             Assert.Equal("https://api.barion.com/payment/start", _httpMessageHandler.HttpRequestMessage.RequestUri.ToString());
         }
