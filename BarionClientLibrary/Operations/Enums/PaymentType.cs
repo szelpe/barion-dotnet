@@ -3,6 +3,7 @@
     public enum PaymentType
     {
         Immediate,
-        Reservation
+        Reservation,
+        DelayedCapture
     }
 }

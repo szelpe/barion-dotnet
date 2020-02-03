@@ -5,12 +5,12 @@
         Prepared = 1,
         Started,
         InProgress,
+        Waiting,
         Reserved,
+        Authorized,
         Canceled,
         Succeeded,
         PartiallySucceeded,
-        Failed,
-        Deleted,
         Expired
     }
 }

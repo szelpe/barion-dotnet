@@ -22,7 +22,7 @@ namespace BarionClientLibrary
     public class BarionClient : IDisposable
     {
         private HttpClient _httpClient;
-        private BarionSettings _settings;
+        private readonly BarionSettings _settings;
         private IRetryPolicy _retryPolicy;
         private TimeSpan _timeout;
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(120);
@@ -42,14 +42,11 @@ namespace BarionClientLibrary
         /// <param name="httpClient">HttpClient instance to use for sending HTTP requests.</param>
         public BarionClient(BarionSettings settings, HttpClient httpClient)
         {
-            if (httpClient == null)
-                throw new ArgumentNullException(nameof(httpClient));
-
 #if NET45
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
 
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -72,17 +69,8 @@ namespace BarionClientLibrary
         /// </summary>
         public IRetryPolicy RetryPolicy
         {
-            get
-            {
-                return _retryPolicy;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
-
-                _retryPolicy = value;
-            }
+            get => _retryPolicy;
+            set => _retryPolicy = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
@@ -90,10 +78,7 @@ namespace BarionClientLibrary
         /// </summary>
         public TimeSpan Timeout
         {
-            get
-            {
-                return _timeout;
-            }
+            get => _timeout;
             set
             {
                 if (value != InfiniteTimeout && (value <= TimeSpan.Zero || value > MaxTimeout))

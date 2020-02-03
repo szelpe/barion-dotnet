@@ -243,3 +243,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+.idea/.idea.BarionClient/riderModule.iml
+.idea/.idea.BarionClient/.idea/.name
+.idea/.idea.BarionClient/.idea/contentModel.xml
+.idea/.idea.BarionClient/.idea/indexLayout.xml
+.idea/.idea.BarionClient/.idea/modules.xml
+.idea/.idea.BarionClient/.idea/projectSettingsUpdater.xml
+.idea/.idea.BarionClient/.idea/vcs.xml

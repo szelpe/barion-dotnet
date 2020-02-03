@@ -27,7 +27,7 @@ namespace BarionClientTester
                     FundingSources = new[] { FundingSourceType.All },
                     PaymentRequestId = "P1",
                     OrderNumber = "1_0",
-                    Currency = Currency.HUF,
+                    Currency = Currency.EUR,
                     CallbackUrl = "http://example.com",
                     Locale = CultureInfo.CurrentCulture,
                     RedirectUrl = "http://example.com"
