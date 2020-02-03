@@ -10,6 +10,7 @@ The Barion .NET library makes it easy to add Barion payment to your .NET applica
 - Reservation payment
 - Refund
 - Finish Reservation
+- Capture payment
 
 ## Prerequisites
 
