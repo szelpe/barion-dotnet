@@ -15,6 +15,7 @@ namespace BarionClientLibrary.Operations.StartPayment
     {
         public PaymentType PaymentType { get; set; }
         public TimeSpan? ReservationPeriod { get; set; }
+        public TimeSpan? DelayedCapturePeriod { get; set; }
         public TimeSpan? PaymentWindow { get; set; }
         public bool GuestCheckOut { get; set; }
         public bool InitiateRecurrence { get; set; }

@@ -89,5 +89,23 @@ namespace BarionClientLibrary.IntegrationTests
 
             Assert.Equal(PaymentStatus.Succeeded, paymentResult2.Status);
         }
+        
+        [Fact]
+        public void Capturing()
+        {
+            var barionClient = new BarionClient(_settings);
+
+            var paymentResult = Operations.StartPayment(barionClient, _settings, PaymentType.DelayedCapture, TimeSpan.FromDays(1));
+
+            BrowserScriptRunner.RunPaymentScript(paymentResult);
+
+            GetPaymentStateOperationResult beforeCaptureState = Operations.GetPaymentState(barionClient, paymentResult);
+
+            Assert.Equal(PaymentStatus.Authorized, beforeCaptureState.Status);
+
+            var captureResult = Operations.CapturePayment(barionClient, beforeCaptureState);
+            
+            Assert.Equal(PaymentStatus.Succeeded, captureResult.Status);
+        }
     }
 }

@@ -6,6 +6,7 @@ using BarionClientLibrary.Operations.StartPayment;
 using System;
 using System.Globalization;
 using System.Linq;
+using BarionClientLibrary.Operations.Capture;
 
 namespace BarionClientLibrary.IntegrationTests
 {
@@ -116,6 +117,31 @@ namespace BarionClientLibrary.IntegrationTests
                 throw new Exception("Finish reservation operation was not successful.");
 
             return finishReservationResult;
+        }
+        
+        public static CaptureOperationResult CapturePayment(BarionClient barionClient, GetPaymentStateOperationResult beforeFinishReservationState)
+        {
+            var capturePayment = new CaptureOperation
+            {
+                PaymentId = beforeFinishReservationState.PaymentId
+            };
+
+            var transactionToCapture = new TransactionToFinish
+            {
+                TransactionId = beforeFinishReservationState.Transactions
+                    .Single(t => t.POSTransactionId == POSTransactionId).TransactionId,
+                Total = 500
+            };
+
+            capturePayment.Transactions = new[] { transactionToCapture };
+
+            Console.WriteLine("Sending Capture...");
+            var captureResult = barionClient.ExecuteAsync<CaptureOperationResult>(capturePayment).Result;
+
+            if (!captureResult.IsOperationSuccessful)
+                throw new Exception("Capture operation was not successful.");
+
+            return captureResult;
         }
     }
 }
