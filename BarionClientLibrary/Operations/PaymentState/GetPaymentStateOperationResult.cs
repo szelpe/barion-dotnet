@@ -19,6 +19,8 @@ namespace BarionClientLibrary.Operations.PaymentState
         public FundingSourceType? FundingSource { get; set; }
         public FundingInformation FundingInformation { get; set; }
         public FundingSourceType[] AllowedFundingSources { get; set; }
+        public RecurrenceType? RecurrenceType { get; set; }
+        public string TraceId { get; set; }
         public bool GuestCheckout { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ValidUntil { get; set; }
