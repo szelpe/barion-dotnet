@@ -1,4 +1,4 @@
-﻿using BarionClientLibrary.Operations.Common;
+using BarionClientLibrary.Operations.Common;
 using System;
 using System.Globalization;
 
@@ -16,18 +16,20 @@ namespace BarionClientLibrary.Operations.PaymentState
         public string POSOwnerEmail { get; set; }
         public PaymentStatus Status { get; set; }
         public PaymentType PaymentType { get; set; }
+        public FundingSourceType[] AllowedFundingSources { get; set; }
         public FundingSourceType? FundingSource { get; set; }
         public FundingInformation FundingInformation { get; set; }
-        public FundingSourceType[] AllowedFundingSources { get; set; }
         public RecurrenceType? RecurrenceType { get; set; }
         public string TraceId { get; set; }
         public bool GuestCheckout { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime? ValidUntil { get; set; }
+        public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public DateTime? ValidUntil { get; set; }
         public DateTime? ReservedUntil { get; set; }
-        public decimal Total { get; set; }
+        public DateTime? DelayedCaptureUntil { get; set; }
         public TransactionDetail[] Transactions { get; set; }
+        public decimal Total { get; set; }
         public Currency Currency { get; set; }
         public CultureInfo SuggestedLocale { get; set; }
         public double? FraudRiskScore { get; set; }
