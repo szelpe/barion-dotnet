@@ -4,6 +4,7 @@
     {
         All,
         Balance,
-        Bankcard
+        Bankcard,
+        BankTransfer
     }
 }
