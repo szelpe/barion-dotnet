@@ -45,7 +45,7 @@ namespace BarionClientLibrary
             if (httpClient == null)
                 throw new ArgumentNullException(nameof(httpClient));
 
-#if NET45
+#if NET462_OR_GREATER
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
 
