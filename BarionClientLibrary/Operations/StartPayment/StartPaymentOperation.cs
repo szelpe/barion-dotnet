@@ -1,4 +1,4 @@
-﻿using BarionClientLibrary.Operations.Common;
+using BarionClientLibrary.Operations.Common;
 using System;
 using System.Globalization;
 using System.Net.Http;
@@ -24,6 +24,7 @@ namespace BarionClientLibrary.Operations.StartPayment
         public string PayerHint { get; set; }
         public string CardHolderNameHint { get; set; }
         public RecurrenceType? RecurrenceType { get; set; }
+        public string TraceId { get; set; }
         public string RedirectUrl { get; set; }
         public string CallbackUrl { get; set; }
         public PaymentTransaction[] Transactions { get; set; }

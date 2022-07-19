@@ -1,4 +1,4 @@
-﻿namespace BarionClientLibrary.Operations.StartPayment
+namespace BarionClientLibrary.Operations.StartPayment
 {
     public enum RecurrenceResult
     {
@@ -6,5 +6,6 @@
         Successful,
         Failed,
         NotFound,
+        ThreeDSAuthenticationRequired,
     }
 }
